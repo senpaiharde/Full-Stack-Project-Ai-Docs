@@ -86,6 +86,20 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <div className=''>
+            <dl>
+                {features.map((feature) => (
+                    <div key={feature.name}>
+                        <dt className=' inline font-semibold'>
+                            <feature.icon />
+                        </dt>
+                        <dd>{feature.description}</dd>
+                    </div>
+                ))}
+            </dl>
+
+        </div>
       </div>
     </main>
   );
