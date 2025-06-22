@@ -67,7 +67,7 @@ export default function Home() {
               enhancing productivity 10x fold effortlessly
             </p>
           </div>
-          <Button>
+          <Button asChild className='mt-10'>
             <Link href='/dashboard'>Get Started</Link>
           </Button>
         </div>
