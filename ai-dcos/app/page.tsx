@@ -27,7 +27,19 @@ const features = [
     name: 'Interactive PDF Viewer',
     description:
       'Engage with your PDFs like never before using our intuitive and interactive viewer.',
-    icon: BrainCogIcon,
+    icon: EyeIcon,
+  },
+  {
+    name: 'Cloud Backup',
+    description:
+      'Rest assured knowing your documents are safely backed up on the cloud , protected from loss or damage',
+    icon: ServerCogIcon,
+  },
+  {
+    name: 'Responsive Across Devices',
+    description:
+      'Access and chat with your PDFs seamlessly on any device, wether its your desktop, tablet, or smartPhone.',
+    icon: MonitorSmartphoneIcon,
   },
   
 ];
