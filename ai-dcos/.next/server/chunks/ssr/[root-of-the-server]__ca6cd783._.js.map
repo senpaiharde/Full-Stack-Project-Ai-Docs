@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 15, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/xxsla/OneDrive/Desktop/projects/Full-Stack-Project-Ai-Docs/ai-dcos/app/layout.tsx"],"sourcesContent":["import { ClerkProvider } from \"@clerk/nextjs\";\nimport \"./globals.css\";\n\n\n\nexport default function RootLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n     <ClerkProvider>\n         <html lang=\"en\">\n      <body className=\"min-h-screen h-screen overflow-hidden flex flex-col\"\n       \n      >\n        {children}\n      </body>\n    </html>\n     </ClerkProvider>\n   \n  );\n}\n"],"names":[],"mappings":";;;;AAAA;;;;AAKe,SAAS,WAAW,EACjC,QAAQ,EAGR;IACA,qBACG,8OAAC,yKAAA,CAAA,gBAAa;kBACV,cAAA,8OAAC;YAAK,MAAK;sBACd,cAAA,8OAAC;gBAAK,WAAU;0BAGb;;;;;;;;;;;;;;;;AAMT","debugId":null}}]
-}
