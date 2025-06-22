@@ -41,12 +41,15 @@ const features = [
       'Access and chat with your PDFs seamlessly on any device, wether its your desktop, tablet, or smartPhone.',
     icon: MonitorSmartphoneIcon,
   },
-  
 ];
 export default function Home() {
   return (
-    <main className="">
-      <h1>Lets build a Sass AI Application</h1>
+    <main className="flex-1 overflow-scroll p-2 lg:p-5 bg-gradient-to-bl from-white to-indigo-600">
+      <div className='bg-white py-24 sm:py-32 rounded-md drop-shadow-xl'>
+        <div>
+ hello
+        </div>
+      </div>
     </main>
   );
 }
