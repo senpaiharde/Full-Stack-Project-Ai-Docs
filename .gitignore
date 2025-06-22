@@ -1,5 +1,6 @@
 node_modules/
 .env
 .env.local
-.next
+
+# Next.js build output
 .next/
