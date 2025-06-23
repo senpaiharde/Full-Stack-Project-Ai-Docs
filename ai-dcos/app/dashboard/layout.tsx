@@ -1,9 +1,14 @@
-import React from 'react'
+import Header from '@/components/ui/Header';
+import { ClerkLoaded } from '@clerk/nextjs';
+import React from 'react';
 
-function DashBoardLayout({children}:{children: React.ReactNode}) {
+function DashBoardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>{children}</div>
-  )
+    <ClerkLoaded>
+        <Header/>
+      <div>{children}</div>
+    </ClerkLoaded>
+  );
 }
 
-export default DashBoardLayout
+export default DashBoardLayout;
