@@ -1,10 +1,12 @@
-'use client'
-import React from 'react'
-
+'use client';
+import React, { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 function FileUploader() {
-  return (
-    <div>FileUploader</div>
-  )
+  const onDrop = useCallback((acceptedFiles : File[]) => {
+    // Do something with the files
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  return <div>FileUploader</div>;
 }
 
-export default FileUploader
+export default FileUploader;
