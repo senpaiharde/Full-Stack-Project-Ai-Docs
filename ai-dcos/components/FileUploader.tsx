@@ -1,13 +1,34 @@
 'use client';
+import { createSupabaseClient } from '@/lib/superbase';
 import { CircleArrowDown, RocketIcon } from 'lucide-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+
 function FileUploader() {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Do something with the files
+  const [uploading, setUploading] = useState(false);
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    setUploading(true);
+    const supabase = createSupabaseClient();
+
+    const {
+      data: { user },
+      error: userErr,
+    } = await supabase.auth.getUser();
+    if (userErr || !user) {
+      console.error('Not signed in', userErr);
+      setUploading(false);
+      return;
+
+      
+    }
   }, []);
   const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept } = useDropzone({
     onDrop,
+    maxFiles: 1,
+    accept: {
+      'application/pdf': ['.pdf'],
+    },
   });
   return (
     <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto">
