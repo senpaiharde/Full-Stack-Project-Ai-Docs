@@ -16,6 +16,7 @@
     "clsx": "^2.1.1",
     "firebase": "^11.9.1",
     "formidable": "^2.1.5",
+    "formidable-serverless": "^1.1.1",
     "lucide-react": "^0.522.0",
     "next": "15.3.4",
     "react": "^19.0.0",

@@ -16,30 +16,25 @@ function FileUploader() {
         console.error('Not signed in');
         return;
       }
-      const supabase = createSupabaseClient();
       setUploading(true);
+
       for (const file of files) {
-        const path = `${userId}/${file.name}`;
+        const form = new FormData();
+        form.append('userId', userId);
+        form.append('file', file);
 
-        const { error: uploadErr } = await supabase.storage
-          .from('pdfs')
-          .upload(path, file, { upsert: true });
-        if (uploadErr) {
-          console.error('Storage upload error:', uploadErr);
-          continue;
+        const res = await fetch('/api/uploadPdf', {
+          method: 'POST',
+          body: form,
+        });
+        if (!res.ok) {
+          console.error('Upload failed', await res.json());
+        } else {
+          const { row } = await res.json();
+          console.log('Inserted PDF row via API:', row);
         }
-
-        const { data, error: insertErr } = await supabase
-          .from('pdf_files')
-          .insert([{ filename: file.name, path, size_bytes: file.size }])
-          .single();
-        if (insertErr) {
-          console.error('Insert metadata error:', insertErr);
-          continue;
-        }
-
-        console.log('Inserted PDF row:', data);
       }
+
       setUploading(false);
     },
     [isLoaded, userId]
