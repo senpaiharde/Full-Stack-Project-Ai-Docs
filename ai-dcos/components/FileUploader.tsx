@@ -1,33 +1,54 @@
 'use client';
+
 import { createSupabaseClient } from '@/lib/superbase';
+import { useAuth } from '@clerk/nextjs';
 import { CircleArrowDown, RocketIcon } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 function FileUploader() {
+  const { userId, isLoaded } = useAuth();
   const [uploading, setUploading] = useState(false);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    setUploading(true);
-    const supabase = createSupabaseClient();
+  const onDrop = useCallback(
+    async (files: File[]) => {
+      if (!isLoaded || !userId) {
+        console.error('Not signed in');
+        return;
+      }
+      const supabase = createSupabaseClient();
+      setUploading(true);
+      for (const file of files) {
+        const path = `${userId}/${file.name}`;
 
-    const {
-      data: { user },
-      error: userErr,
-    } = await supabase.auth.getUser();
-    if (userErr || !user) {
-      console.error('Not signed in', userErr);
+        const { error: uploadErr } = await supabase.storage
+          .from('pdfs')
+          .upload(path, file, { upsert: true });
+        if (uploadErr) {
+          console.error('Storage upload error:', uploadErr);
+          continue;
+        }
+
+        const { data, error: insertErr } = await supabase
+          .from('pdf_files')
+          .insert([{ filename: file.name, path, size_bytes: file.size }])
+          .single();
+        if (insertErr) {
+          console.error('Insert metadata error:', insertErr);
+          continue;
+        }
+
+        console.log('Inserted PDF row:', data);
+      }
       setUploading(false);
-      return;
-
-      
-    }
-  }, []);
+    },
+    [isLoaded, userId]
+  );
   const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept } = useDropzone({
     onDrop,
     maxFiles: 1,
     accept: {
-      'application/pdf': ['.pdf'],
+      'application/pdf': [],
     },
   });
   return (

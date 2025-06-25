@@ -1,62 +1,41 @@
-'use client';
-import { useState } from 'react';
-import { createSupabaseClient } from '../lib/superbase';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import formidable from 'formidable';
+import fs from 'fs';
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-export default function PdfUpload() {
-  const [file, setFile] = useState<File | null>(null);
+export const config = { api: { bodyParser: false } };
 
-  const upload = async () => {
-    if (!file) return;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const supabaseAdmin = await getSupabaseServerClient();
+  if (req.method !== 'POST') return res.status(405).end();
 
-    const supabase = createSupabaseClient();
+  const form = new formidable.IncomingForm();
+  const { fields, files } = await new Promise<any>((resolve, reject) => {
+    form.parse(req, (err, fields, files) => (err ? reject(err) : resolve({ fields, files })));
+  });
 
-    //  Fetch the authenticated user correctly
-    const {
-      data: { user },
-      error: userErr,
-    } = await supabase.auth.getUser();
-    if (userErr || !user) {
-      console.error('No user session:', userErr);
-      return;
-    }
+  const file = files.file as formidable.File;
+  const userId = fields.userId as string;
+  if (!file || !userId) {
+    return res.status(400).json({ error: 'Missing file or userId' });
+  }
 
-    const path = `${user.id}/${file.name}`;
+  
+  const buffer = fs.readFileSync(file.filepath);
+  const path = `${userId}/${file.originalFilename}`;
 
-    //  Upload to storage
-    const { error: uploadErr } = await supabase.storage
-      .from('pdfs')
-      .upload(path, file);
-    if (uploadErr) {
-      console.error('Storage upload error:', uploadErr);
-      return;
-    }
+ 
+  const { error: uploadErr } = await supabaseAdmin.storage
+    .from('pdfs')
+    .upload(path, buffer, { contentType: file.mimetype! });
+  if (uploadErr) return res.status(500).json({ error: uploadErr.message });
 
-    //  Insert metadata row
-    const { data, error: insertErr } = await supabase
-      .from('pdf_files')
-      .insert([
-        {
-          filename: file.name,
-          path,
-          size_bytes: file.size,
-        },
-      ]);
-    if (insertErr) {
-      console.error('Insert metadata error:', insertErr);
-      return;
-    }
+  
+  const { data, error: insertErr } = await supabaseAdmin
+    .from('pdf_files')
+    .insert([{ filename: file.originalFilename, path, size_bytes: file.size }])
+    .single();
+  if (insertErr) return res.status(500).json({ error: insertErr.message });
 
-    console.log('Inserted PDF row:', data);
-  };
-
-  return (
-    <>
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={(e) => setFile(e.target.files![0])}
-      />
-      <button onClick={upload}>Upload PDF</button>
-    </>
-  );
+  res.status(200).json({ row: data });
 }
