@@ -3,11 +3,15 @@
 import { createSupabaseClient } from '@/lib/superbase';
 import { useAuth } from '@clerk/nextjs';
 import { CircleArrowDown, RocketIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
+
+
 function FileUploader() {
   const { userId, isLoaded } = useAuth();
+  const router = useRouter();
   const [uploading, setUploading] = useState(false);
 
   const onDrop = useCallback(
@@ -27,14 +31,18 @@ function FileUploader() {
           method: 'POST',
           body: form,
         });
-        if (!res.ok) {
-          console.error('Upload failed', await res.json());
-        } else {
-          const { row } = await res.json();
-          console.log('Inserted PDF row via API:', row);
-        }
+        const json = await res.json();
+        console.log(' uploadPdf response', json);
+        if (json.error) {
+            console.error('Upload API error:', json.error);
+            setUploading(false);
+            return;
+            
       }
-
+       const row = json.row;
+       //console.log(' Inserted PDF row via API:', row);
+       router.push(`/dashboard/files/${row.id}`);
+      }
       setUploading(false);
     },
     [isLoaded, userId]
