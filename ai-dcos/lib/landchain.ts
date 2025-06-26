@@ -118,6 +118,19 @@ export async function generateEmbeddingsInPineconeVectorStore(docId: string) {
     /// If the namespace does not exist, download the PDF from
     // supabase via the stored Download URL & generate the embeddings and store them in the Pinecone vector store
 
-    const splitDocs = await generateDocs(docId)
+    const splitDocs = await generateDocs(docId);
+    console.log(
+      `--- Storing the embeddings in namespace ${docId} in the ${indexName} Pinecone vector store... ---`
+    );
+
+    pineconeVectorStore = await PineconeStore.fromDocuments(
+        splitDocs,
+        embeddings,
+        {
+            pineconeIndex:index,
+            namespace:docId
+        }
+    );
+    return pineconeVectorStore
   }
 }
