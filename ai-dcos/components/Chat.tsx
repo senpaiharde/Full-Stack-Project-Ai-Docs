@@ -1,11 +1,11 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState, useTransition } from 'react';
-import { Button } from './ui/button';
+import { Button } from './button';
 import { Input } from './ui/input';
 import { Loader2Icon } from 'lucide-react';
 
-import { useCollection } from 'react-firebase-hooks/firestore';
+
 import { useUser } from '@clerk/nextjs';
 
 import { askQuestion } from '@/actions/askQuestion';
@@ -21,35 +21,42 @@ export type Message = {
 
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
-  const { toast } = useToast();
+  //const { toast } = useToast();
 
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isPending, startTransition] = useTransition();
   const bottomOfChatRef = useRef<HTMLDivElement>(null);
 
-
-  const handleSubmit = async (e:FormEvent) => {
-    e.preventDefault()
-
-  }
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+  };
   return (
     <div className="flex flex-col h-full overflow-scroll">
-      <div className='flex 1 w-full'>
+      {/* Chat contents */}
+      <div className="flex-1 w-full">
+        {/* chat messages... */}
 
+        
       </div>
 
-      <form 
-      className='flex sticky bottom-0 space-x-2 p-5 bg-indigo-600/75'
-      onSubmit={handleSubmit}
-      
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col w-full sticky bottom-0 space-x-2 p-5 bg-indigo-600/75"
       >
-        <Input 
-        placeholder='Ask a Question...'
-        value={input}
-        onChange={(e) => {setInput(e.target.value)}}
+        <Input
+          placeholder="Ask a Question..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
         />
-        <Button>Ask</Button>
+
+        <Button type="submit" disabled={!input || isPending}>
+          {isPending ? (
+            <Loader2Icon className="animate-spin text-indigo-600" />
+          ) : (
+            "Ask"
+          )}
+        </Button>
       </form>
     </div>
   );
