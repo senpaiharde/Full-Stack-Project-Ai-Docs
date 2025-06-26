@@ -54,11 +54,26 @@ function Chat({ id }: { id: string }) {
   }, [user, id, supabase]);
 
   useEffect(() => {
-    bottomOfChatRef.current?.scrollIntoView({behavior : 'smooth'})
-  },[messages])
+    bottomOfChatRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
+    const q = input.trim();
+    if (!q) return;
+    setInput('');
+
+    const humanMessage: Message = {
+      role: 'human',
+      message: q,
+      createdAt: new Date(),
+    };
+    const aiPlaceholder: Message = {
+      role: 'ai',
+      message: 'Thinking...',
+      createdAt: new Date(),
+    };
+    setMessages((prev) => [...prev, humanMessage, aiPlaceholder]);
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
