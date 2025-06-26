@@ -7,13 +7,23 @@ import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-
-
 function FileUploader() {
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState('');
 
+  const simulateProgress = () => {
+    let current = 0;
+    const interval = setInterval(() => {
+      current += Math.floor(Math.random() * 10) + 5;
+      setProgress(current > 100 ? 100 : current);
+      setStatus(`Uploading... ${current > 100 ? 100 : current}%`);
+
+      if (current >= 100) clearInterval(interval);
+    }, 150);
+  };
   const onDrop = useCallback(
     async (files: File[]) => {
       if (!isLoaded || !userId) {
@@ -21,7 +31,9 @@ function FileUploader() {
         return;
       }
       setUploading(true);
-
+      setProgress(0);
+      setStatus('Starting upload...');
+      simulateProgress();
       for (const file of files) {
         const form = new FormData();
         form.append('userId', userId);
@@ -34,14 +46,16 @@ function FileUploader() {
         const json = await res.json();
         console.log(' uploadPdf response', json);
         if (json.error) {
-            console.error('Upload API error:', json.error);
-            setUploading(false);
-            return;
-            
-      }
-       const row = json.row;
-       //console.log(' Inserted PDF row via API:', row);
-       router.push(`/dashboard/files/${row.id}`);
+          console.error('Upload API error:', json.error);
+          setStatus('Upload failed');
+          setUploading(false);
+          return;
+        }
+        const row = json.row;
+        setProgress(100);
+        setStatus('Upload complete!');
+        //console.log(' Inserted PDF row via API:', row);
+        router.push(`/dashboard/files/${row.id}`);
       }
       setUploading(false);
     },
@@ -56,24 +70,23 @@ function FileUploader() {
   });
   return (
     <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto">
-        {uploading && (
-            <div className='mt-32 flex flex-col justify-center items-center gap-5'>
-            <div className={`radial-progress bg-indigo-300 text-white border-indigo-600 border-4
-                ${progress === 100 && 'hidden'}`
-            }
-            role='progressbar'
+      {uploading && (
+        <div className="mt-32 flex flex-col justify-center items-center gap-5">
+          <div
+            className={`radial-progress bg-indigo-300 text-white border-indigo-600 border-4
+                ${progress === 100 && 'hidden'}`}
+            role="progressbar"
             style={{
-                //@ts-ignore
-                '--value': progressbar,
-                '--size':'12rem',
-                '--thickness':'1.3rem'
+              //@ts-ignore
+              '--value': progress,
+              '--size': '12rem',
+              '--thickness': '1.3rem',
             }}>
-                {progress}
-                
-            </div>
-            <p>{status}</p>
-            </div>
-        )}
+            {progress}%
+          </div>
+          <p>{status}</p>
+        </div>
+      )}
       <div
         {...getRootProps()}
         className={`p-10 border-2 border-dashed mt-10 w-[90%]  border-indigo-600 text-indigo-600
