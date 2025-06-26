@@ -53,9 +53,12 @@ function Chat({ id }: { id: string }) {
     fetchMessages();
   }, [user, id, supabase]);
 
-  
+  useEffect(() => {
+    bottomOfChatRef.current?.scrollIntoView({behavior : 'smooth'})
+  },[messages])
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
