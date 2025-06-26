@@ -46,6 +46,29 @@ async function fetchMessagesFromDB(docId: string) {
 
   return chatHistory;
 }
+export async function generateDocs(docId: string) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error('User not found');
+  }
+  console.log('--- Fetching the download URL from supabase... ---');
+  const { data, error } = await getSupabaseServerClient
+    .from('pdf_files')
+    .select('path')
+    .eq('id', docId)
+    .eq('owner_id', userId)
+    .single();
+
+     if (error || !data?.path) {
+        console.error(error);
+        throw new Error("Could not fetch PDF file path from Supabase.");
+     }
+
+     
+
+
+}
 
 export async function generateEmbeddingsInPineconeVectorStore(docId: string) {
   const { userId } = await auth();
