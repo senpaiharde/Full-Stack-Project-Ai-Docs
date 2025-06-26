@@ -123,14 +123,47 @@ export async function generateEmbeddingsInPineconeVectorStore(docId: string) {
       `--- Storing the embeddings in namespace ${docId} in the ${indexName} Pinecone vector store... ---`
     );
 
-    pineconeVectorStore = await PineconeStore.fromDocuments(
-        splitDocs,
-        embeddings,
-        {
-            pineconeIndex:index,
-            namespace:docId
-        }
-    );
-    return pineconeVectorStore
+    pineconeVectorStore = await PineconeStore.fromDocuments(splitDocs, embeddings, {
+      pineconeIndex: index,
+      namespace: docId,
+    });
+    return pineconeVectorStore;
   }
 }
+
+const generateLangchainCompletion = async (docId: string, question: string) => {
+  let pineconeVectorStore;
+  // pulling the vector store by id
+  pineconeVectorStore = await generateEmbeddingsInPineconeVectorStore(docId);
+  if (!pineconeVectorStore) {
+    throw new Error('Pinecone vector store not found');
+  }
+
+  // Create a retriever to search through the vector store sort of pipe line
+  console.log('--- Creating a retriever... ---');
+  const retriever = pineconeVectorStore.asRetriever();
+
+  // Fetch the chat history from the database by id
+  const chatHistory = await fetchMessagesFromDB(docId);
+
+  // Define a prompt template for generating search queries based on conversation history
+  console.log('--- Defining a prompt template... ---');
+  const historyAwarePrompt = ChatPromptTemplate.fromMessages([
+    ...chatHistory, // Insert the actual chat history here
+
+    ['user', '{input}'],
+    [
+      'user',
+      'Given the above conversation, generate a search query to look up in order to get information relevant to the conversation',
+    ],
+  ]);
+
+  // Create a history-aware retriever chain that uses the model, retriever, and prompt
+  console.log('--- Creating a history-aware retriever chain... ---');
+
+  const historyAwareRetrieverChain = await createHistoryAwareRetriever({
+    llm: model,
+    retriever,
+    rephrasePrompt: historyAwarePrompt
+  })
+};
