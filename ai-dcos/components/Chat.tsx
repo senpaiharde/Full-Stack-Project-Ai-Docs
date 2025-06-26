@@ -22,12 +22,26 @@ export type Message = {
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
   //const { toast } = useToast();
+  const supabase = createClientComponentClient();
 
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isPending, startTransition] = useTransition();
   const bottomOfChatRef = useRef<HTMLDivElement>(null);
-const supabase = createClientComponentClient();
+
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+        if(!user)return
+        const {data,error} = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('file_id',id)
+        .order('created_at',{ascending: true})
+
+        if(error){console.error("ERROR fetching messages", error.message); return;}
+    }
+  },[])
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
   };
