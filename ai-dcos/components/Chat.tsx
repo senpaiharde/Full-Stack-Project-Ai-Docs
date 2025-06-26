@@ -74,6 +74,18 @@ function Chat({ id }: { id: string }) {
       createdAt: new Date(),
     };
     setMessages((prev) => [...prev, humanMessage, aiPlaceholder]);
+
+    await supabase.from('chat_messages').insert({
+      file_id: id,
+      user_id: user?.id,
+      rile: 'human',
+      message: q,
+    });
+
+
+    startTransition(async () => {
+        const {success, message} = await askQuestion(id, q)
+    })
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
