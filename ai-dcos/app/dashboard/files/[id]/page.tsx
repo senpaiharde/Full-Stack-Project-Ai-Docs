@@ -4,13 +4,10 @@ import { auth } from '@clerk/nextjs/server';
 import React from 'react';
 import { notFound } from 'next/navigation';
 
-
-
- async function ChatToFilePage({ params }: { params: { id: string } }) {
-  
+async function ChatToFilePage({ params }: { params: { id: string } }) {
   const { id } = await Promise.resolve(params);
   if (!id) return notFound();
-  
+
   const { userId } = await auth();
   if (!userId) throw new Error('Unauthorized');
 
@@ -33,7 +30,9 @@ import { notFound } from 'next/navigation';
 
   return (
     <div className="grid lg:grid-cols-5 h-full overflow-hidden">
-      <div className="lg-col-span-2 overflow-y-auto"></div>
+      <div className="lg-col-span-2 overflow-y-auto">
+        <Chat id={id} />
+      </div>
       <div className="col-span-5 lg:col-span-3 bg-gray-100 border-r-2 lg:border-indigo-600 lg:-order-1 overflow-auto">
         <PdfView url={encodedUrl} />
       </div>
