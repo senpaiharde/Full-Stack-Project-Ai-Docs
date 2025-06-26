@@ -16,7 +16,32 @@ function PdfView({ url }: { url: string }) {
   const [file, setFile] = useState<Blob | null>(null);
   const [rotation, setRotation] = useState<number>(0);
   const [scale, setScale] = useState<number>(1);
-  return <div>PdfView</div>;
+
+  useEffect(() => {
+    const fetchFile = async () => {
+      const response = await fetch(url);
+      const file = await response.blob();
+
+      setFile(file);
+    };
+  }, [url]);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }): void => {
+    setNumPages(numPages);
+  };
+  return (
+    <div>
+      <Document
+      loading={null}
+      file={file}
+      rotate={rotation}
+      onLoadSuccess={onDocumentLoadSuccess}
+      className='m-4 overflow-scroll'
+      >
+        <Page />
+      </Document>
+    </div>
+  );
 }
 
 export default PdfView;

@@ -26,9 +26,9 @@ async function ChatToFilePage({
   }
   const path = data?.path;
   const url = `${process.env.SUPABASE_URL}/storage/v1/object/public/pdfs/${path}`;
-  console.log(`--- Public download URL: ${url} ---`);
+  
 
-  const respone = await fetch(url);
+  
   return (
     <div className="grid lg:grid-cols-5 h-full overflow-hidden">
       <div className="lg-col-span-2 overflow-y-auto"></div>
