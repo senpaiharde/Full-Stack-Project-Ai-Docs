@@ -1,21 +1,17 @@
-'use server'
+'use server';
 
-import { generateEmbeddingsInPineconeVectorStore } from "@/lib/landchain";
-import { auth } from "@clerk/nextjs/server"
-import { revalidatePath } from "next/cache"
+import { generateEmbeddingsInPineconeVectorStore } from '@/lib/landchain';
+import { auth } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
 
+export async function generateEmbedding(docId: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error('Unauthorized'); // protect this route with clerk
 
-export async function generateEmbedding(docId:string) {
-    auth().protect()// protect this route with clerk
+  // turning A PDF intto embedding
+  await generateEmbeddingsInPineconeVectorStore(docId);
 
-    // turning A PDF intto embedding
-    await generateEmbeddingsInPineconeVectorStore(docId);
+  revalidatePath('/dashboard');
 
-    revalidatePath('/dashboard');
-
-    return {completed : true}
-
-
-
-    
+  return { completed: true };
 }
