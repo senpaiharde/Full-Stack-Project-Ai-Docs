@@ -84,12 +84,12 @@ function FileUploader() {
               '--size': '12rem',
               '--thickness': '1.3rem',
             }}>
-            {progress}%
+            {progress} %
           </div>
+         
           <p className='text-indigo-600 animate-pulse'>{status}</p>
         </div>
-      )}
-      <div
+      )}{!uploading &&(<div
         {...getRootProps()}
         className={`p-10 border-2 border-dashed mt-10 w-[90%]  border-indigo-600 text-indigo-600
         rounded-lg h-96 flex items-center justify-center ${
@@ -109,7 +109,8 @@ function FileUploader() {
             </>
           )}
         </div>
-      </div>
+      </div>)}
+      
     </div>
   );
 }
