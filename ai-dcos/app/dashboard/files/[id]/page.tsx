@@ -2,14 +2,15 @@ import PdfView from '@/components/PdfView';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 import { auth } from '@clerk/nextjs/server';
 import React from 'react';
+import { notFound } from 'next/navigation';
 
-async function ChatToFilePage({
-  params: { id },
-}: {
-  params: {
-    id: string;
-  };
-}) {
+
+
+ async function ChatToFilePage({ params }: { params: { id: string } }) {
+  
+  const { id } = await Promise.resolve(params);
+  if (!id) return notFound();
+  
   const { userId } = await auth();
   if (!userId) throw new Error('Unauthorized');
 
@@ -25,15 +26,16 @@ async function ChatToFilePage({
     throw new Error('Could not fetch PDF file path from Supabase.');
   }
   const path = data?.path;
-  const url = `${process.env.SUPABASE_URL}/storage/v1/object/public/pdfs/${path}`;
-  
 
-  
+  const url = `${process.env.SUPABASE_URL}/storage/v1/object/public/pdfs/${path}`;
+  const encodedUrl = encodeURI(url);
+  console.log(encodedUrl, 'encodedUrl');
+
   return (
     <div className="grid lg:grid-cols-5 h-full overflow-hidden">
       <div className="lg-col-span-2 overflow-y-auto"></div>
       <div className="col-span-5 lg:col-span-3 bg-gray-100 border-r-2 lg:border-indigo-600 lg:-order-1 overflow-auto">
-        <PdfView url={url}/>
+        <PdfView url={encodedUrl} />
       </div>
     </div>
   );
