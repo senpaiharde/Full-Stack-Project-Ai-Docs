@@ -15,7 +15,9 @@ function Header() {
           <Button asChild variant="link" className="hidden md:flex">
             <Link href="/dashboard/upgrade">Pricing</Link>
           </Button>
+          <button className="btn btn-primary">DaisyUI Button</button>
           <Button asChild variant="outline">
+            
             <Link href="/dashboard/upgrade">My Documents</Link>
           </Button>
           <Button asChild variant="outline" className="text-indigo-600">

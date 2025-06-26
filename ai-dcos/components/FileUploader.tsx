@@ -56,6 +56,24 @@ function FileUploader() {
   });
   return (
     <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto">
+        {uploading && (
+            <div className='mt-32 flex flex-col justify-center items-center gap-5'>
+            <div className={`radial-progress bg-indigo-300 text-white border-indigo-600 border-4
+                ${progress === 100 && 'hidden'}`
+            }
+            role='progressbar'
+            style={{
+                //@ts-ignore
+                '--value': progressbar,
+                '--size':'12rem',
+                '--thickness':'1.3rem'
+            }}>
+                {progress}
+                
+            </div>
+            <p>{status}</p>
+            </div>
+        )}
       <div
         {...getRootProps()}
         className={`p-10 border-2 border-dashed mt-10 w-[90%]  border-indigo-600 text-indigo-600

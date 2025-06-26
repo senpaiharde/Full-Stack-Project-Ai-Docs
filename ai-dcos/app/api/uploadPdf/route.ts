@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     .select('*')
     .single();
 
-  console.log('🔧 insertResult:', insertResult);
+  console.log(' insertResult:', insertResult);
   if (insertResult.error) {
     return NextResponse.json({ error: insertResult.error.message }, { status: 500 });
   }
