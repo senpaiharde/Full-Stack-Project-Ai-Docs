@@ -20,7 +20,7 @@ export type Message = {
 
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
-  //const { toast } = useToast();
+  const { toast } = useToast();
   const supabase = createClientComponentClient();
 
   const [input, setInput] = useState('');
@@ -82,10 +82,31 @@ function Chat({ id }: { id: string }) {
       message: q,
     });
 
-
     startTransition(async () => {
-        const {success, message} = await askQuestion(id, q)
-    })
+      const { success, message } = await askQuestion(id, q);
+
+      if (!success) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: message,
+        });
+
+        setMessages((prev) => prev.slice(0, prev.length - 1).concat([
+            {
+                role:'ai',
+                message:`whoops.... ${message}`,
+                createdAt: new Date(),
+            },
+        ])
+    );
+    return;
+      }
+
+
+      
+
+    });
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
