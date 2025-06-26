@@ -92,26 +92,41 @@ function Chat({ id }: { id: string }) {
           description: message,
         });
 
-        setMessages((prev) => prev.slice(0, prev.length - 1).concat([
+        setMessages((prev) =>
+          prev.slice(0, prev.length - 1).concat([
             {
-                role:'ai',
-                message:`whoops.... ${message}`,
-                createdAt: new Date(),
+              role: 'ai',
+              message: `whoops.... ${message}`,
+              createdAt: new Date(),
             },
-        ])
-    );
-    return;
+          ])
+        );
+        return;
       }
 
-
-      
-
+      await supabase.from('chat_messages').insert({
+        file_id: id,
+        user_id: user?.id,
+        rile: 'ai',
+        message,
+      });
     });
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
       {/* Chat contents */}
-      <div className="flex-1 w-full">{/* chat messages... */}</div>
+      <div className="flex-1 w-full">
+        {messages.length === 0 ? (
+          <ChatMessage key="placeholder" />
+        ) : (
+          <div className="p-5">
+            {messages.map((messages, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
+            <div ref={bottomOfChatRef}/>
+          </div>
+        )}
+      </div>
 
       <form
         onSubmit={handleSubmit}
