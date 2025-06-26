@@ -60,14 +60,37 @@ export async function generateDocs(docId: string) {
     .eq('owner_id', userId)
     .single();
 
-     if (error || !data?.path) {
-        console.error(error);
-        throw new Error("Could not fetch PDF file path from Supabase.");
-     }
+  if (error || !data?.path) {
+    console.error(error);
+    throw new Error('Could not fetch PDF file path from Supabase.');
+  }
+  //taking the path
+  const path = data.path;
+  const downloadUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/pdfs/${path}`;
+  console.log(`--- Public download URL: ${downloadUrl} ---`);
+  //downloading
+  const respone = await fetch(downloadUrl);
+  const arrayBuffer = await respone.arrayBuffer();
+  const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
 
-     
+  console.log('--- Loading PDF document... ---');
+  // storing
+  const loader = new PDFLoader(blob);
+  const docs = await loader.load();
 
+  console.log('--- Splitting document into chunks... ---');
 
+  const splitter = new RecursiveCharacterTextSplitter();
+  const splitDocs = await splitter.splitDocuments(docs);
+
+  console.log(`--- Split into ${splitDocs.length} parts ---`);
+  return splitDocs;
+}
+
+async function namespaceExists(index: Index<RecordMetadata>, namespace: string) {
+  if (namespace === null) throw new Error('No namespace value provided.');
+  const { namespaces } = await index.describeIndexStats();
+  return namespaces?.[namespace] !== undefined;
 }
 
 export async function generateEmbeddingsInPineconeVectorStore(docId: string) {
@@ -78,4 +101,23 @@ export async function generateEmbeddingsInPineconeVectorStore(docId: string) {
   }
 
   let pineconeVectorStore;
+  // Generate embeddings (numerical representations) for the split documents
+  console.log('--- Generating embeddings... ---');
+
+  const embeddings = new OpenAIEmbeddings();
+  const index = await pineconeClient.index(indexName);
+  const namespaceAlreadyExists = await namespaceExists(index, docId);
+  if (namespaceAlreadyExists) {
+    console.log(`--- Namespace ${docId} already exists, reusing existing embeddings... ---`);
+    pineconeVectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+      pineconeIndex: index,
+      namespace: docId,
+    });
+    return pineconeVectorStore;
+  } else {
+    /// If the namespace does not exist, download the PDF from
+    // supabase via the stored Download URL & generate the embeddings and store them in the Pinecone vector store
+
+    const splitDocs = await generateDocs(docId)
+  }
 }
