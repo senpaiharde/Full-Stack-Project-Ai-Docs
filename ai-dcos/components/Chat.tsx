@@ -28,7 +28,31 @@ function Chat({ id }: { id: string }) {
   const [isPending, startTransition] = useTransition();
   const bottomOfChatRef = useRef<HTMLDivElement>(null);
 
-  return <div>Chat</div>;
+
+  const handleSubmit = async (e:FormEvent) => {
+    e.preventDefault()
+
+  }
+  return (
+    <div className="flex flex-col h-full overflow-scroll">
+      <div className='flex 1 w-full'>
+
+      </div>
+
+      <form 
+      className='flex sticky bottom-0 space-x-2 p-5 bg-indigo-600/75'
+      onSubmit={handleSubmit}
+      
+      >
+        <Input 
+        placeholder='Ask a Question...'
+        value={input}
+        onChange={(e) => {setInput(e.target.value)}}
+        />
+        <Button>Ask</Button>
+      </form>
+    </div>
+  );
 }
 
 export default Chat;
