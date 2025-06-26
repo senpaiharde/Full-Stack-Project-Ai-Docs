@@ -11,7 +11,7 @@ import { useUser } from '@clerk/nextjs';
 import { askQuestion } from '@/actions/askQuestion';
 import ChatMessage from './ChatMessage';
 import { useToast } from './ui/use-toast';
-
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export type Message = {
   id?: string;
   role: 'human' | 'ai' | 'placeholder';
@@ -27,7 +27,7 @@ function Chat({ id }: { id: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isPending, startTransition] = useTransition();
   const bottomOfChatRef = useRef<HTMLDivElement>(null);
-
+const supabase = createClientComponentClient();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
   };
@@ -36,15 +36,15 @@ function Chat({ id }: { id: string }) {
       {/* Chat contents */}
       <div className="flex-1 w-full">
         {/* chat messages... */}
-
+    
         
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-full sticky bottom-0 space-x-2 p-5 bg-indigo-600/75"
+        className="flex  sticky bottom-0 space-x-2 p-5 bg-indigo-600/75"
       >
-        <Input
+        <Input className='bg-white'
           placeholder="Ask a Question..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
