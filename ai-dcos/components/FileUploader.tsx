@@ -55,7 +55,9 @@ function FileUploader() {
         setProgress(100);
         setStatus('Upload complete!');
         //console.log(' Inserted PDF row via API:', row);
-        router.push(`/dashboard/files/${row.id}`);
+        setTimeout(() => {
+          router.push(`/dashboard/files/${row.id}`);
+        }, 500);
       }
       setUploading(false);
     },
@@ -84,7 +86,7 @@ function FileUploader() {
             }}>
             {progress}%
           </div>
-          <p>{status}</p>
+          <p className='text-indigo-600 animate-pulse'>{status}</p>
         </div>
       )}
       <div
