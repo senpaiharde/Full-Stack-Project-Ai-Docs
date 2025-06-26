@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.22.0",
+    "@langchain/community": "^0.3.47",
+    "@langchain/core": "^0.3.61",
+    "@langchain/openai": "^0.5.15",
+    "@langchain/pinecone": "^0.2.0",
     "@pinecone-database/pinecone": "^6.1.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@supabase/supabase-js": "^2.50.1",
@@ -19,6 +23,7 @@
     "firebase": "^11.9.1",
     "formidable": "^2.1.5",
     "formidable-serverless": "^1.1.1",
+    "langchain": "^0.3.29",
     "lucide-react": "^0.522.0",
     "next": "15.3.4",
     "react": "^19.0.0",
