@@ -101,19 +101,29 @@ function Chat({ id }: { id: string }) {
     <div className="flex flex-col h-full overflow-scroll">
       {/* Chat contents */}
       <div className="flex-1 w-full">
-        {messages.length === 0 ? (
-          <div>
-            <p className="text-black">No messages yet.</p>
-            {/**<ChatMessage key="placeholder" />**/}
+        {/* chat messages... */}
+
+        {isPending ? (
+          <div className="flex items-center justify-center">
+            <Loader2Icon className="animate-spin h-20 w-20 text-indigo-600 mt-20" />
           </div>
         ) : (
           <div className="p-5">
-            {messages.map((messages, index) => (
-              <div key={index}>
-                <p>{messages.message}</p>
-                {/**<ChatMessage key={index} message={messages} />**/}
-              </div>
+            {messages.length === 0 && (
+              <ChatMessage
+                key={"placeholder"}
+                message={{
+                  role: "ai",
+                  message: "Ask me anything about the document!",
+                  createdAt: new Date(),
+                }}
+              />
+            )}
+
+            {messages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
             ))}
+
             <div ref={bottomOfChatRef} />
           </div>
         )}
