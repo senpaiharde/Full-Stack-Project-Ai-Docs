@@ -89,9 +89,19 @@ function Chat({ id }: { id: string }) {
   useEffect(() => {
     bottomOfChatRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    if (!user?.id) {
+      toast.error('User not found');
+      return;
+    }
+    console.log('Inserting message:', e, {
+      role: 'human',
+      message: input,
+      file_id: id,
+      created_at: new Date().toISOString(),
+    });
     const q = input.trim();
     if (!q) return;
     setInput('');
@@ -108,12 +118,13 @@ function Chat({ id }: { id: string }) {
     };
     setMessages((prev) => [...prev, humanMessage, aiPlaceholder]);
 
-    await supabase.from('chat_messages').insert({
+    const { error } = await supabase.from('chat_messages').insert({
       file_id: id,
       user_id: user?.id,
-      rile: 'human',
+      role: 'human',
       message: q,
     });
+    if (error) console.error('Insert error:', error.message);
 
     startTransition(async () => {
       const { success, message } = await askQuestion(id, q);
@@ -138,7 +149,7 @@ function Chat({ id }: { id: string }) {
       await supabase.from('chat_messages').insert({
         file_id: id,
         user_id: user?.id,
-        rile: 'ai',
+        role: 'ai',
         message,
       });
     });

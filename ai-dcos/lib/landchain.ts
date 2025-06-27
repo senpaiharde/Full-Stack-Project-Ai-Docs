@@ -29,9 +29,9 @@ async function fetchMessagesFromDB(docId: string) {
   console.log('--- Fetching chat history from the supabase database... ---');
   // Get the last 6 messages from the chat history
   const { data, error } = await getSupabaseServerClient
-    .from('ai_messages')
+    .from('chat_messages')
     .select('role, message')
-    .eq('session_id', docId)
+    .eq('file_id', docId)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(6);

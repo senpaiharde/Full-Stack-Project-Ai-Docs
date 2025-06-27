@@ -24,18 +24,18 @@ export async function askQuestion(id: string, question: string) {
 
   const messageCount = humanMessages.length;
 
-  const { data: userData, error: userError } = await getSupabaseServerClient
-    .from('user')
-    .select('hasActiveMembership')
-    .eq('id', userId)
+  const { data: subData, error: subError  } = await getSupabaseServerClient
+    .from('subscriptions')
+    .select('is_pro')
+    .eq('user_id', userId)
     .single();
 
-  if (userError) {
-    console.error('Error fetching user data:', userError.message);
+  if (subError) {
+    console.error('Error fetching user data:', subError.message);
     return { success: false, message: 'Failed to check membership status.' };
   }
 
-  const isPro = userData?.hasActiveMembership;
+  const isPro = subData?.is_pro;
 
   if (!isPro && messageCount >= FREE_LIMIT) {
     return {
@@ -59,7 +59,7 @@ export async function askQuestion(id: string, question: string) {
 
   const { error: insertUserError } = await getSupabaseServerClient.from('chat_messages').insert([
     {
-      ser_id: userId,
+      user_id: userId,
       file_id: id,
       role: userMessage.role,
       message: userMessage.message,
@@ -80,9 +80,9 @@ export async function askQuestion(id: string, question: string) {
     createdAt: new Date(),
   };
 
-  const { error: insertAiError  } = await getSupabaseServerClient.from('chat_messages').insert([
+  const { error: insertAiError } = await getSupabaseServerClient.from('chat_messages').insert([
     {
-      ser_id: userId,
+      user_id: userId,
       file_id: id,
       role: aiMessage.role,
       message: aiMessage.message,
