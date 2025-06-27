@@ -9,7 +9,7 @@ import { useUser } from '@clerk/nextjs';
 
 import { askQuestion } from '@/actions/askQuestion';
 import ChatMessage from './ChatMessage';
-import { useToast } from './ui/use-toast';
+import { toast } from 'sonner';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 export type Message = {
   id?: string;
@@ -20,7 +20,7 @@ export type Message = {
 
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
-  const { toast } = useToast();
+
   const supabase = createClientComponentClient();
 
   const [input, setInput] = useState('');
@@ -51,6 +51,39 @@ function Chat({ id }: { id: string }) {
       setMessages(formatted);
     };
     fetchMessages();
+    const channel = supabase
+      .channel(`realtime:chat_messages:file:${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `file_id=eq.${id}`,
+        },
+        (payload) => {
+          const newMsg = payload.new as {
+            id: string;
+            role: 'human' | 'ai';
+            message: string;
+            created_at: string;
+          };
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: newMsg?.id,
+              role: newMsg.role,
+              message: newMsg.message,
+              createdAt: new Date(newMsg.created_at),
+            },
+          ]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, id, supabase]);
 
   useEffect(() => {
@@ -86,9 +119,7 @@ function Chat({ id }: { id: string }) {
       const { success, message } = await askQuestion(id, q);
 
       if (!success) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
+        toast.error('Error', {
           description: message,
         });
 
@@ -117,13 +148,19 @@ function Chat({ id }: { id: string }) {
       {/* Chat contents */}
       <div className="flex-1 w-full">
         {messages.length === 0 ? (
-          <ChatMessage key="placeholder" />
+          <div>
+            hey
+            {/**<ChatMessage key="placeholder" />**/}
+          </div>
         ) : (
           <div className="p-5">
             {messages.map((messages, index) => (
-              <ChatMessage key={index} message={message} />
+              <div key={index}>
+                <p>{messages.message}</p>
+                {/**<ChatMessage key={index} message={messages} />**/}
+              </div>
             ))}
-            <div ref={bottomOfChatRef}/>
+            <div ref={bottomOfChatRef} />
           </div>
         )}
       </div>
