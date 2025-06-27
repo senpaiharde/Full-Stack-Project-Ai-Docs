@@ -4,7 +4,6 @@ import { auth } from '@clerk/nextjs/server';
 import { Message } from '@/components/Chat';
 import { generateLangchainCompletion } from '@/lib/landchain';
 
-
 const FREE_LIMIT = 3;
 const PRO_LIMIT = 20;
 export async function askQuestion(id: string, question: string) {
@@ -58,15 +57,15 @@ export async function askQuestion(id: string, question: string) {
     createdAt: new Date(),
   };
 
-  const {error: insertUserError } = await getSupabaseServerClient.from('chat_messages').insert([
+  const { error: insertUserError } = await getSupabaseServerClient.from('chat_messages').insert([
     {
-        ser_id: userId,
+      ser_id: userId,
       file_id: id,
       role: userMessage.role,
       message: userMessage.message,
       created_at: userMessage.createdAt.toISOString(),
-    }
-  ])
+    },
+  ]);
 
   if (insertUserError) {
     console.error('Failed to insert user message:', insertUserError.message);
@@ -76,11 +75,25 @@ export async function askQuestion(id: string, question: string) {
   const reply = await generateLangchainCompletion(id, question);
 
   const aiMessage: Message = {
-     role: 'ai',
+    role: 'ai',
     message: reply,
     createdAt: new Date(),
+  };
+
+  const { error: insertAiError  } = await getSupabaseServerClient.from('chat_messages').insert([
+    {
+      ser_id: userId,
+      file_id: id,
+      role: aiMessage.role,
+      message: aiMessage.message,
+      created_at: aiMessage.createdAt.toISOString(),
+    },
+  ]);
+
+  if (insertAiError) {
+    console.error('Failed to insert AI message:', insertAiError.message);
+    return { success: false, message: 'Failed to store AI reply.' };
   }
 
-  
-
+  return { success: true, message: null };
 }
