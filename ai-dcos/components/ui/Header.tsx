@@ -18,7 +18,7 @@ function Header() {
           
           <Button asChild variant="outline">
             
-            <Link href="/dashboard/upgrade">My Documents</Link>
+            <Link href="/dashboard">My Documents</Link>
           </Button>
           <Button asChild variant="outline" className="text-indigo-600">
             <Link href="/dashboard/upload">

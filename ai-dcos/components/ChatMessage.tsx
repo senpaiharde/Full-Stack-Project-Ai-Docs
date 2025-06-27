@@ -31,7 +31,7 @@ function ChatMessage({ message }: { message: Message }) {
         </div>
       </div>
       <div 
-      className={`chat-bubble prose ${isHuman && "bg-indigo-600 text-white"}`}>
+      className={`chat-bubble prose rounded-2xl px-4 py-2 ${isHuman && "bg-indigo-600 text-white"}`}>
         {message.message === 'Thinking...' ? (
           <div className="flex items-center justify-center  ">
             <Loader2Icon className="animate-spin h-5 w-5 text-white" />
