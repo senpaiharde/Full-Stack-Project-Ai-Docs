@@ -77,7 +77,7 @@ export async function generateDocs(docId: string) {
   // storing
   const loader = new PDFLoader(blob);
   const docs = await loader.load();
-
+  console.log(docs.map((d) => d.pageContent));
   console.log('--- Splitting document into chunks... ---');
 
   const splitter = new RecursiveCharacterTextSplitter();

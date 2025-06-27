@@ -24,18 +24,18 @@ export async function askQuestion(id: string, question: string) {
 
   const messageCount = humanMessages.length;
 
-  const { data: subData, error: subError  } = await getSupabaseServerClient
+  const { data: subData, error: subError } = await getSupabaseServerClient
     .from('subscriptions')
     .select('is_pro')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (subError) {
     console.error('Error fetching user data:', subError.message);
     return { success: false, message: 'Failed to check membership status.' };
   }
 
-  const isPro = subData?.is_pro;
+  const isPro = subData?.is_pro ?? false;
 
   if (!isPro && messageCount >= FREE_LIMIT) {
     return {

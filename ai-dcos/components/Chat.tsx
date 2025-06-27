@@ -30,7 +30,6 @@ function Chat({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (!user) return;
       const { data, error } = await supabase
         .from('chat_messages')
         .select('*')
@@ -68,15 +67,33 @@ function Chat({ id }: { id: string }) {
             message: string;
             created_at: string;
           };
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: newMsg?.id,
-              role: newMsg.role,
-              message: newMsg.message,
-              createdAt: new Date(newMsg.created_at),
-            },
-          ]);
+          setMessages((prev) => {
+            if (newMsg.role === 'ai') {
+              // replace the "Thinking..." placeholder
+              const copy = [...prev];
+              const index = copy.findIndex((m) => m.id === 'ai-placeholder');
+              if (index !== -1) {
+                copy[index] = {
+                  id: newMsg.id,
+                  role: 'ai',
+                  message: newMsg.message,
+                  createdAt: new Date(newMsg.created_at),
+                };
+                return copy;
+              }
+            }
+
+            // otherwise just append (e.g. human message from another tab)
+            return [
+              ...prev,
+              {
+                id: newMsg.id,
+                role: newMsg.role,
+                message: newMsg.message,
+                createdAt: new Date(newMsg.created_at),
+              },
+            ];
+          });
         }
       )
       .subscribe();
@@ -112,6 +129,7 @@ function Chat({ id }: { id: string }) {
       createdAt: new Date(),
     };
     const aiPlaceholder: Message = {
+      id: 'ai-placeholder',
       role: 'ai',
       message: 'Thinking...',
       createdAt: new Date(),
@@ -160,7 +178,7 @@ function Chat({ id }: { id: string }) {
       <div className="flex-1 w-full">
         {messages.length === 0 ? (
           <div>
-            hey
+            <p className="text-black">No messages yet.</p>
             {/**<ChatMessage key="placeholder" />**/}
           </div>
         ) : (
