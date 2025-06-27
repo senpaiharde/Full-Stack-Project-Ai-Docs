@@ -10,7 +10,7 @@ import { useUser } from '@clerk/nextjs';
 import { askQuestion } from '@/actions/askQuestion';
 import ChatMessage from './ChatMessage';
 import { toast } from 'sonner';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 export type Message = {
   id?: string;
   role: 'human' | 'ai' | 'placeholder';
@@ -21,8 +21,7 @@ export type Message = {
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
 
-  const supabase = createClientComponentClient();
-
+  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -51,11 +50,13 @@ function Chat({ id }: { id: string }) {
   }, [id]);
 
   useEffect(() => {
-    bottomOfChatRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomOfChatRef.current?.scrollIntoView({
+      behavior: 'smooth',
+    });
   }, [messages]);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     if (!user?.id) {
       toast.error('User not found');
       return;
@@ -96,6 +97,7 @@ function Chat({ id }: { id: string }) {
         )
       );
     });
+    setLoading(false);
   };
   return (
     <div className="flex flex-col h-full overflow-scroll">
@@ -103,7 +105,7 @@ function Chat({ id }: { id: string }) {
       <div className="flex-1 w-full">
         {/* chat messages... */}
 
-        {isPending ? (
+        {loading ? (
           <div className="flex items-center justify-center">
             <Loader2Icon className="animate-spin h-20 w-20 text-indigo-600 mt-20" />
           </div>
@@ -111,10 +113,10 @@ function Chat({ id }: { id: string }) {
           <div className="p-5">
             {messages.length === 0 && (
               <ChatMessage
-                key={"placeholder"}
+                key={'placeholder'}
                 message={{
-                  role: "ai",
-                  message: "Ask me anything about the document!",
+                  role: 'ai',
+                  message: 'Ask me anything about the document!',
                   createdAt: new Date(),
                 }}
               />
