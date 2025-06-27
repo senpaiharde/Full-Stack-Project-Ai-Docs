@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import { Message } from '@/components/Chat';
 import { generateLangchainCompletion } from '@/lib/landchain';
 
-const FREE_LIMIT = 3;
+const FREE_LIMIT = 20;
 const PRO_LIMIT = 20;
 export async function askQuestion(id: string, question: string) {
   const { userId } = await auth();
@@ -95,5 +95,5 @@ export async function askQuestion(id: string, question: string) {
     return { success: false, message: 'Failed to store AI reply.' };
   }
 
-  return { success: true, message: null };
+  return { success: true, message: reply };
 }

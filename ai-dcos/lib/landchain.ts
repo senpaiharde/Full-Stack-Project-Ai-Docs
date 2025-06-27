@@ -16,7 +16,7 @@ import { auth } from '@clerk/nextjs/server';
 
 const model = new ChatOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  modelName: 'gpt-4o',
+  modelName: 'gpt-3.5-turbo',
 });
 
 export const indexName = 'papafam';
@@ -34,7 +34,7 @@ async function fetchMessagesFromDB(docId: string) {
     .eq('file_id', docId)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
-    .limit(6);
+    .limit(3);
 
   if (error) throw new Error('Failed to fetch chat history: ' + error.message);
 

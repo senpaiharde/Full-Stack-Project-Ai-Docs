@@ -30,18 +30,15 @@ function Chat({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .eq('file_id', id)
-        .order('created_at', { ascending: true });
+      const res = await fetch(`/api/getMessages?file_id=${id}`);
+      const { data, error } = await res.json();
 
       if (error) {
-        console.error('ERROR fetching messages', error.message);
+        console.error('Fetch error:', error);
         return;
       }
 
-      const formatted = data.map((m) => ({
+      const formatted = data.map((m: any) => ({
         id: m.id,
         role: m.role,
         message: m.message,
@@ -49,59 +46,9 @@ function Chat({ id }: { id: string }) {
       }));
       setMessages(formatted);
     };
+
     fetchMessages();
-    const channel = supabase
-      .channel(`realtime:chat_messages:file:${id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'chat_messages',
-          filter: `file_id=eq.${id}`,
-        },
-        (payload) => {
-          const newMsg = payload.new as {
-            id: string;
-            role: 'human' | 'ai';
-            message: string;
-            created_at: string;
-          };
-          setMessages((prev) => {
-            if (newMsg.role === 'ai') {
-              // replace the "Thinking..." placeholder
-              const copy = [...prev];
-              const index = copy.findIndex((m) => m.id === 'ai-placeholder');
-              if (index !== -1) {
-                copy[index] = {
-                  id: newMsg.id,
-                  role: 'ai',
-                  message: newMsg.message,
-                  createdAt: new Date(newMsg.created_at),
-                };
-                return copy;
-              }
-            }
-
-            // otherwise just append (e.g. human message from another tab)
-            return [
-              ...prev,
-              {
-                id: newMsg.id,
-                role: newMsg.role,
-                message: newMsg.message,
-                createdAt: new Date(newMsg.created_at),
-              },
-            ];
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, id, supabase]);
+  }, [id]);
 
   useEffect(() => {
     bottomOfChatRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,63 +60,41 @@ function Chat({ id }: { id: string }) {
       toast.error('User not found');
       return;
     }
-    console.log('Inserting message:', e, {
-      role: 'human',
-      message: input,
-      file_id: id,
-      created_at: new Date().toISOString(),
-    });
+
     const q = input.trim();
     if (!q) return;
     setInput('');
 
-    const humanMessage: Message = {
-      role: 'human',
-      message: q,
-      createdAt: new Date(),
-    };
-    const aiPlaceholder: Message = {
-      id: 'ai-placeholder',
-      role: 'ai',
-      message: 'Thinking...',
-      createdAt: new Date(),
-    };
-    setMessages((prev) => [...prev, humanMessage, aiPlaceholder]);
+    // 1) Push human + placeholder
+    setMessages((prev) => [
+      ...prev,
+      { role: 'human', message: q, createdAt: new Date() },
+      { id: 'ai-placeholder', role: 'ai', message: 'Thinking...', createdAt: new Date() },
+    ]);
 
-    const { error } = await supabase.from('chat_messages').insert({
-      file_id: id,
-      user_id: user?.id,
-      role: 'human',
-      message: q,
-    });
-    if (error) console.error('Insert error:', error.message);
-
+    // 2) Let the server insert both human + AI, and return the AI reply
     startTransition(async () => {
-      const { success, message } = await askQuestion(id, q);
+      const { success, message: aiReply } = await askQuestion(id, q);
 
       if (!success) {
-        toast.error('Error', {
-          description: message,
-        });
-
+        toast.error(`AI Error: ${aiReply}`);
+        // replace placeholder with error text
         setMessages((prev) =>
-          prev.slice(0, prev.length - 1).concat([
-            {
-              role: 'ai',
-              message: `whoops.... ${message}`,
-              createdAt: new Date(),
-            },
-          ])
+          prev.map((m) =>
+            m.id === 'ai-placeholder'
+              ? { role: 'ai', message: `Whoops… ${aiReply}`, createdAt: new Date() }
+              : m
+          )
         );
         return;
       }
 
-      await supabase.from('chat_messages').insert({
-        file_id: id,
-        user_id: user?.id,
-        role: 'ai',
-        message,
-      });
+      // 3) On success, replace placeholder with the real reply
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === 'ai-placeholder' ? { role: 'ai', message: aiReply!, createdAt: new Date() } : m
+        )
+      );
     });
   };
   return (
