@@ -2,6 +2,7 @@
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 import { auth } from '@clerk/nextjs/server';
 import { Message } from '@/components/Chat';
+import { generateLangchainCompletion } from '@/lib/landchain';
 
 
 const FREE_LIMIT = 3;
@@ -72,5 +73,14 @@ export async function askQuestion(id: string, question: string) {
     return { success: false, message: 'Failed to ask question.' };
   }
 
-  const replay 
+  const reply = await generateLangchainCompletion(id, question);
+
+  const aiMessage: Message = {
+     role: 'ai',
+    message: reply,
+    createdAt: new Date(),
+  }
+
+  
+
 }
