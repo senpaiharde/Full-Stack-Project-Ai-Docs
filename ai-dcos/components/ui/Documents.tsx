@@ -37,7 +37,7 @@ async function Documents() {
         .from('pdfs') 
         .getPublicUrl(path);
 
-      a
+      
       const { data: listedFiles, error: listError } = await supabase.storage
         .from('pdfs')
         .list(folderPrefix);
@@ -63,6 +63,15 @@ async function Documents() {
     <div
       className="flex flex-wrap p-5 bg-gray-100 justify-center 
     lg:justify-start rounded-b-sm gap-5 max-w-7xl mx-auto">
+        {files.map(({ id, name, downloadUrl, size }) => (
+        <Document
+          key={id}
+          id={id}
+          name={name}
+          size={size}
+          downloadUrl={downloadUrl}
+        />
+      ))}
       <PlaceHolderDocument />
     </div>
   );
