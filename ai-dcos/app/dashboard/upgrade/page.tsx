@@ -14,6 +14,20 @@ function PricingPage() {
           choose an affordable plan thats packed with the best features for interacting with PDFs,
           enhancing productivity, and streamlining your workflow.
         </p>
+        <div>
+            <div>
+                <h3 className='text-lg font-semibold leading-8 text-gray-900'>
+                    Starter Plan
+                </h3>
+                <p className='mt-4 text-sm leading-6 text-gray-600'>
+                    Explore core Features at No Cost
+                </p>
+                
+            </div>
+
+
+            <div></div>
+        </div>
       </div>
     </div>
   );
