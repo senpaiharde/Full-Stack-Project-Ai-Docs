@@ -38,7 +38,20 @@ function PricingPage() {
           </div>
 
           <div className='ring-2 ring-indigo-600 rounded-3xl p-8'>
-            <h3 className=''></h3>
+            <h3 className='text-lg font-semibold leading-8 text-indigo-600'>
+                Pro Plan
+            </h3>
+            <p className='mt-4 text-sm leading-6 text-gray-600'>
+                Maximize Productivity with PRO Features
+            </p>
+            <p className='mt-6 flex items-baseline gap-x-1'>
+                <span className='text-4xl font-bold tracking-tight text-gray-900'>
+                    $5.99
+                </span>
+                <span className='text-sm font-semibold leading-6 text-gray-600'>
+                    / month
+                </span>
+            </p>
           </div>
         </div>
       </div>
