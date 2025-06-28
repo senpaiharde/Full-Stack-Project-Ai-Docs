@@ -2,6 +2,7 @@ import React from 'react';
 import PlaceHolderDocument from './PlaceHolderDocument';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 import { auth } from '@clerk/nextjs/server';
+import Document from './Document';
 interface FileRecord {
   id: string;
   name: string;
