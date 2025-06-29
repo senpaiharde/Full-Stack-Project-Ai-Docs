@@ -7,6 +7,9 @@ import { useUser } from '@clerk/nextjs';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useTransition } from 'react';
+
+
+
 export type UserDetails = {
   email: any;
   name: string;
