@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/button';
 import useSubscription from '@/hooks/helperSubscription';
+import getStripe from '@/lib/strip.js';
 import { useUser } from '@clerk/nextjs';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -23,12 +24,21 @@ function PricingPage() {
     if (!user) return;
 
     const userDetails: UserDetails = {    // takes the user details as we send prefill the data user already has for e.x last payment data
-      email: user.primaryEmailAddress?.toString()!,
+      email: user.primaryEmailAddress?.toString(),
       name: user.fullName!,
     };
 
     startTransition(async () => { //payment 
-        const stripePortalUrl = await 
+        const stripePortalUrl = await getStripe();
+        if(hasActiveMembership){
+
+        }
+;
+        const sessionId = await createCheckoutSession(userDetails);
+        await stripePortalUrl?.redirectToCheckout({
+            sessionId,
+        })
+
     })
   };
 
