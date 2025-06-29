@@ -1,19 +1,34 @@
-"use client";
+'use client';
 
 import { Button } from '@/components/button';
+import useSubscription from '@/hooks/helperSubscription';
 import { useUser } from '@clerk/nextjs';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useTransition } from 'react';
 export type UserDetails = {
-  email: string;
+  email: any;
   name: string;
 };
 function PricingPage() {
   const { user } = useUser();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [loading, setLoading] =  useState()
+
+  const { hasActiveMembership, loading } = useSubscription();
+  const hanldeUpgrade = () => {
+    if (!user) return;
+
+    const userDetails: UserDetails = {
+      email: user.primaryEmailAddress?.toString(),
+      name: user.fullName!,
+    };
+
+    startTransition(async () => {
+        const stripePortalUrl = await 
+    })
+  };
+
   return (
     <div className="">
       <div className="py-24 sm:py-32">
