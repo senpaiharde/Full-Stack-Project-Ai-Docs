@@ -1,7 +1,19 @@
-import { CheckIcon } from 'lucide-react';
-import React from 'react';
+"use client";
 
+import { Button } from '@/components/button';
+import { useUser } from '@clerk/nextjs';
+import { CheckIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useTransition } from 'react';
+export type UserDetails = {
+  email: string;
+  name: string;
+};
 function PricingPage() {
+  const { user } = useUser();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] =  useState()
   return (
     <div className="">
       <div className="py-24 sm:py-32">
@@ -37,21 +49,47 @@ function PricingPage() {
             </ul>
           </div>
 
-          <div className='ring-2 ring-indigo-600 rounded-3xl p-8'>
-            <h3 className='text-lg font-semibold leading-8 text-indigo-600'>
-                Pro Plan
-            </h3>
-            <p className='mt-4 text-sm leading-6 text-gray-600'>
-                Maximize Productivity with PRO Features
+          <div className="ring-2 ring-indigo-600 rounded-3xl p-8">
+            <h3 className="text-lg font-semibold leading-8 text-indigo-600">Pro Plan</h3>
+            <p className="mt-4 text-sm leading-6 text-gray-600">
+              Maximize Productivity with PRO Features
             </p>
-            <p className='mt-6 flex items-baseline gap-x-1'>
-                <span className='text-4xl font-bold tracking-tight text-gray-900'>
-                    $5.99
-                </span>
-                <span className='text-sm font-semibold leading-6 text-gray-600'>
-                    / month
-                </span>
+            <p className="mt-6 flex items-baseline gap-x-1">
+              <span className="text-4xl font-bold tracking-tight text-gray-900">$5.99</span>
+              <span className="text-sm font-semibold leading-6 text-gray-600">/ month</span>
             </p>
+            <Button
+              disabled={loading || isPending}
+              className="bg-indigo-600 w-full text-white shadow-sm hover:bg-indigo-500 mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 
+            focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Upgrade to Pro
+            </Button>
+            <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                Store upto 20 Documents
+              </li>
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                Ability to Delete Documents
+              </li>
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                Up to 100 messages per document
+              </li>
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                Full Power AI Chat Functionality with Memory Recall
+              </li>
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                Advanced analytics
+              </li>
+              <li className="flex gap-x-3">
+                <CheckIcon className="h-6 w-5 flex-none text-indigo-600" />
+                24-hour support response time
+              </li>
+            </ul>
           </div>
         </div>
       </div>
