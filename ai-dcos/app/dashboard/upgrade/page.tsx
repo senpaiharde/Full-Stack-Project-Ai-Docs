@@ -13,18 +13,21 @@ export type UserDetails = {
 function PricingPage() {
   const { user } = useUser();
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition(); /// cool feac is pending + makes the site active for user file there is pending in action
 
   const { hasActiveMembership, loading } = useSubscription();
+
+
+
   const handleUpgrade = () => {
     if (!user) return;
 
-    const userDetails: UserDetails = {
-      email: user.primaryEmailAddress?.toString(),
+    const userDetails: UserDetails = {    // takes the user details as we send prefill the data user already has for e.x last payment data
+      email: user.primaryEmailAddress?.toString()!,
       name: user.fullName!,
     };
 
-    startTransition(async () => {
+    startTransition(async () => { //payment 
         const stripePortalUrl = await 
     })
   };
