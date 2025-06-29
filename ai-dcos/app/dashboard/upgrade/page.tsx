@@ -1,6 +1,7 @@
 'use client';
 
 import { createCheckoutSession } from '@/actions/createCheckoutSession';
+import { createStripePortal } from '@/actions/createStripePortal';
 import { Button } from '@/components/button';
 import useSubscription from '@/hooks/helperSubscription';
 import getStripe from '@/lib/strip.js';
@@ -35,9 +36,13 @@ function PricingPage() {
       const stripePortalUrl = await getStripe();
        if (!stripePortalUrl) throw new Error("Stripe.js failed to load");
       if (hasActiveMembership) {
-        const stripePortalUrl = await create();
+        const stripePortalUrl = await createStripePortal();
         return router.push(stripePortalUrl);
       }
+
+
+
+      
       const sessionId = await createCheckoutSession(userDetails);
       await stripePortalUrl?.redirectToCheckout({
         sessionId,
