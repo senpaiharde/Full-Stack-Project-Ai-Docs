@@ -34,25 +34,25 @@ export async function createCheckoutSession(userDetails: UserDetails) {
       name: userDetails.name,
       metadata: { userId },
     });
-
-    const { error: upsertErr } = await supabase.from('subscriptions').upsert({
+    const payload = {
       user_id: userId,
       stripe_customer_id: customer.id,
       is_pro: false,
       plan: 'free',
       expires_at: null,
-    });
+    };
+    const { error: upsertErr } = await supabase
+      .from("subscriptions")
+      .upsert([payload], { onConflict: ["user_id"] });
 
     if (upsertErr) throw upsertErr;
     stripeCustomerId = customer.id;
   }
-   const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "subscription",
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'subscription',
     customer: stripeCustomerId,
-    line_items: [
-      { price: "price_1RfOmfRdk979SLwZnBIeCaZu", quantity: 1 },
-    ],
+    line_items: [{ price: 'price_1RfOmfRdk979SLwZnBIeCaZu', quantity: 1 }],
     success_url: `${getBaseUrl()}/dashboard?upgrade=true`,
     cancel_url: `${getBaseUrl()}/upgrade`,
   });

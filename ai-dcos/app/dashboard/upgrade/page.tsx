@@ -1,14 +1,14 @@
 'use client';
 
+import { createCheckoutSession } from '@/actions/createCheckoutSession';
 import { Button } from '@/components/button';
 import useSubscription from '@/hooks/helperSubscription';
 import getStripe from '@/lib/strip.js';
 import { useUser } from '@clerk/nextjs';
+import { loadStripe } from '@stripe/stripe-js';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useTransition } from 'react';
-
-
 
 export type UserDetails = {
   email: any;
@@ -21,28 +21,28 @@ function PricingPage() {
 
   const { hasActiveMembership, loading } = useSubscription();
 
-
-
   const handleUpgrade = () => {
     if (!user) return;
 
-    const userDetails: UserDetails = {    // takes the user details as we send prefill the data user already has for e.x last payment data
+    const userDetails: UserDetails = {
+      // takes the user details as we send prefill the data user already has for e.x last payment data
       email: user.primaryEmailAddress?.toString(),
       name: user.fullName!,
     };
 
-    startTransition(async () => { //payment 
-        const stripePortalUrl = await getStripe();
-        if(hasActiveMembership){
-
-        }
-;
-        const sessionId = await createCheckoutSession(userDetails);
-        await stripePortalUrl?.redirectToCheckout({
-            sessionId,
-        })
-
-    })
+    startTransition(async () => {
+      //payment
+      const stripePortalUrl = await getStripe();
+       if (!stripePortalUrl) throw new Error("Stripe.js failed to load");
+      if (hasActiveMembership) {
+        const stripePortalUrl = await create();
+        return router.push(stripePortalUrl);
+      }
+      const sessionId = await createCheckoutSession(userDetails);
+      await stripePortalUrl?.redirectToCheckout({
+        sessionId,
+      });
+    });
   };
 
   return (
@@ -90,13 +90,15 @@ function PricingPage() {
               <span className="text-sm font-semibold leading-6 text-gray-600">/ month</span>
             </p>
             <Button
-
               disabled={loading || isPending}
               className="bg-indigo-600 w-full text-white shadow-sm hover:bg-indigo-500 mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 
             focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={handleUpgrade}>
-              {isPending || loading ? 'Loading...' : hasActiveMembership ? 'Manage Plan' : 'Upgrade to Pro'}
-              
+              onClick={handleUpgrade}>
+              {isPending || loading
+                ? 'Loading...'
+                : hasActiveMembership
+                ? 'Manage Plan'
+                : 'Upgrade to Pro'}
             </Button>
             <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
               <li className="flex gap-x-3">

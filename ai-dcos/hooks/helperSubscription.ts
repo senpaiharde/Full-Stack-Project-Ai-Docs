@@ -23,31 +23,38 @@ export default function useSubscription() {
     }
 
     setLoading(true);
-    fetch('/api/subscription')
-    .then(async (res: Response) => {
-      if (!res.ok) throw new Error('error at fetching subscription');
-      return res.json() as Promise<{
-        hasActiveMembership: boolean;
-        fileCount: number;
-      }>;
+    fetch('/api/subscription', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id }),
     })
-    .then(({hasActiveMembership , fileCount}) => {
+      .then(async (res: Response) => {
+        const payload = await res.json();
+        if (!res.ok) {
+          console.error('Subscription API error', res.status, payload);
+          throw new Error(payload.error || payload.message || res.statusText);
+        }
+        return payload as Promise<{
+          hasActiveMembership: boolean;
+          fileCount: number;
+        }>;
+      })
+      .then(({ hasActiveMembership, fileCount }) => {
         setHasActiveMembership(hasActiveMembership);
-        const limit = hasActiveMembership ?  PRO_LIMIT : FREE_LIMIT;
-        setIsOverFileLimit(fileCount >= limit)
-    })
-    .catch((err) => {
-        console.error(err)
-        setError(err)
-    })
-    .finally(() => setLoading(false)) 
-    
-   
-  },[user]);
-   return {
+        const limit = hasActiveMembership ? PRO_LIMIT : FREE_LIMIT;
+        setIsOverFileLimit(fileCount >= limit);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(err);
+      })
+      .finally(() => setLoading(false));
+  }, [user]);
+  return {
     hasActiveMembership,
     loading,
     error,
-    isOverFileLimit
-   }
+    isOverFileLimit,
+  };
 }
