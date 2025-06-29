@@ -1,6 +1,7 @@
 'use server';
 
 import { UserDetails } from '@/app/dashboard/upgrade/page';
+import getBaseUrl from '@/lib/getBaseUrl';
 import stripe from '@/lib/stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 import { auth } from '@clerk/nextjs/server';
