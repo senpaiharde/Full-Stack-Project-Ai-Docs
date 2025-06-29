@@ -16,7 +16,7 @@ function PricingPage() {
   const [isPending, startTransition] = useTransition();
 
   const { hasActiveMembership, loading } = useSubscription();
-  const hanldeUpgrade = () => {
+  const handleUpgrade = () => {
     if (!user) return;
 
     const userDetails: UserDetails = {
@@ -74,10 +74,13 @@ function PricingPage() {
               <span className="text-sm font-semibold leading-6 text-gray-600">/ month</span>
             </p>
             <Button
+
               disabled={loading || isPending}
               className="bg-indigo-600 w-full text-white shadow-sm hover:bg-indigo-500 mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 
-            focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Upgrade to Pro
+            focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={handleUpgrade}>
+              {isPending || loading ? 'Loading...' : hasActiveMembership ? 'Manage Plan' : 'Upgrade to Pro'}
+              
             </Button>
             <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
               <li className="flex gap-x-3">
