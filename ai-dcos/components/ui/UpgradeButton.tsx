@@ -13,7 +13,15 @@ import React from 'react';
 function UpgradeButton() {
   const [isPending, startTransition] = useTransition(); /// cool feac is pending + makes the site active for user file there is pending in action
   const { hasActiveMembership, loading } = useSubscription();
-
+  const router = useRouter()
+  const handleAccount = () => {
+    startTransition(async () => {
+        const stripePortalUrl = await createStripePortal();
+        router.push(stripePortalUrl)
+        
+        
+    })
+  }
   if (!hasActiveMembership && !loading)
     return (
       <Button asChild variant="default" className="border-indigo-600">
@@ -33,6 +41,7 @@ function UpgradeButton() {
 
   return (
   <Button
+  onClick={handleAccount}
    disabled={isPending}
    variant='default'
    className='border-indigo-500 bg-indigo-600'>
@@ -40,7 +49,7 @@ function UpgradeButton() {
     <Loader2Icon className="animate-spin" />
    ):(
     <p>
-        <span className='font-extrabold'>PRO</span>
+        <span className='font-extrabold'>PRO </span>
         Account
     </p>
    )}

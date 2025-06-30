@@ -10,6 +10,7 @@ import { useUser } from '@clerk/nextjs';
 import { askQuestion } from '@/actions/askQuestion';
 import ChatMessage from './ChatMessage';
 import { toast } from 'sonner';
+import { SonnerDemo } from './ui/SonnerMsg';
 
 export type Message = {
   id?: string;
@@ -17,6 +18,15 @@ export type Message = {
   message: string;
   createdAt: Date;
 };
+
+toast('hey', {
+  description: 'hey',
+
+  action: {
+    label: 'Undo',
+    onClick: () => console.log('Close'),
+  },
+});
 
 function Chat({ id }: { id: string }) {
   const { user } = useUser();
@@ -58,7 +68,12 @@ function Chat({ id }: { id: string }) {
     e.preventDefault();
     setLoading(true);
     if (!user?.id) {
-      toast.error('User not found');
+      toast.error('User not found', {
+        action: {
+          label: 'Close',
+          onClick: () => console.log('Close'),
+        },
+      });
       return;
     }
 
@@ -78,7 +93,12 @@ function Chat({ id }: { id: string }) {
       const { success, message: aiReply } = await askQuestion(id, q);
 
       if (!success) {
-        toast.error(`AI Error: ${aiReply}`);
+        toast.error(`AI Error: ${aiReply}`,{
+            action: {
+            label: "Close",
+            onClick: () => console.log("Close"),
+          },
+        });
         // replace placeholder with error text
         setMessages((prev) =>
           prev.map((m) =>

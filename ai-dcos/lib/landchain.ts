@@ -34,7 +34,7 @@ async function fetchMessagesFromDB(docId: string) {
     .eq('file_id', docId)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
-    .limit(3);
+    .limit(5);
 
   if (error) throw new Error('Failed to fetch chat history: ' + error.message);
 

@@ -1,8 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useRouter } from "next/navigation";
 import byteSize from "byte-size";
+import { DownloadCloud, Trash2Icon } from "lucide-react";
+import useSubscription from "@/hooks/helperSubscription";
+import { useTransition } from "react";
+import { Button } from "../button";
 function Document({
   id,
   name,
@@ -16,6 +19,7 @@ function Document({
 }) {
   const router = useRouter();
   const [isDeleting, startTransaction] = useTransition();
+  const { hasActiveMembership } = useSubscription();
   //const { hasActiveMembership } = useSubscription();
   return (
     <div
