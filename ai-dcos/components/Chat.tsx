@@ -19,14 +19,7 @@ export type Message = {
   createdAt: Date;
 };
 
-toast('hey', {
-  description: 'hey',
 
-  action: {
-    label: 'Undo',
-    onClick: () => console.log('Close'),
-  },
-});
 
 function Chat({ id }: { id: string }) {
   const { user } = useUser();

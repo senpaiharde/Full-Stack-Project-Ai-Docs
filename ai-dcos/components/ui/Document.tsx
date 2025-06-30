@@ -20,7 +20,15 @@ function Document({
   const router = useRouter();
   const [isDeleting, startTransaction] = useTransition();
   const { hasActiveMembership } = useSubscription();
-  //const { hasActiveMembership } = useSubscription();
+  
+  toast('hey', {
+    description: 'hey',
+  
+    action: {
+      label: 'Undo',
+      onClick: () => console.log('Close'),
+    },
+  });
   return (
     <div
       className="flex flex-col w-64 h-80 rounded-xl bg-white drop-shadow-md 
