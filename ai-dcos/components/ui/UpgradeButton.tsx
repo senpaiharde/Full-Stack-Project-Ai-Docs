@@ -12,9 +12,17 @@ import React from 'react';
 
 function UpgradeButton() {
   const [isPending, startTransition] = useTransition(); /// cool feac is pending + makes the site active for user file there is pending in action
-
   const { hasActiveMembership, loading } = useSubscription();
-  if (!hasActiveMembership && !loading) return <Button asChild variant="default"></Button>;
+
+  if (!hasActiveMembership && !loading) return;
+  <Button asChild variant="default" className="border-indigo-600">
+    <Link href="/dashboard/upgrade">
+      Upgrade
+      <StarIcon className="fill-indigo-600 text-white"></StarIcon>
+    </Link>
+  </Button>;
+
+  if(loading)
   return <div>UpgradeButton</div>;
 }
 
