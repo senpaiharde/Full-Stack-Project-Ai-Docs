@@ -6,6 +6,7 @@ import { DownloadCloud, Trash2Icon } from "lucide-react";
 import useSubscription from "@/hooks/helperSubscription";
 import { useTransition } from "react";
 import { Button } from "../button";
+import { toast } from 'sonner';
 function Document({
   id,
   name,
@@ -21,14 +22,14 @@ function Document({
   const [isDeleting, startTransaction] = useTransition();
   const { hasActiveMembership } = useSubscription();
   
-  toast('hey', {
-    description: 'hey',
-  
-    action: {
-      label: 'Undo',
-      onClick: () => console.log('Close'),
-    },
-  });
+ // toast('hey', {
+ //   description: 'hey',
+ // 
+  //  action: {
+ //     label: 'Undo',
+  //    onClick: () => console.log('Close'),
+  //  },
+ // });
   return (
     <div
       className="flex flex-col w-64 h-80 rounded-xl bg-white drop-shadow-md 
@@ -38,6 +39,14 @@ function Document({
       onClick={() => router.push(`/dashboard/files/${id}`)}>
         <p className='font-semibold line-clamp-2'>{name}</p>
         <p className='text-sm text-gray-500 group-hover:text-indigo-100'>{byteSize(size).value}KB</p>
+      </div>
+      <div className="flex space-x-2 justify-end">
+        <Button variant='outline'
+        asChild>
+            <a href={downloadUrl} download>
+                <DownloadCloud className="h-6 w-6 text-indigo-600"/>
+            </a>
+        </Button>
       </div>
     </div>
   );

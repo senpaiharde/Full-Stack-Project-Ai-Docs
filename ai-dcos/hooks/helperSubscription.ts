@@ -10,12 +10,11 @@ export default function useSubscription() {
   const [hasActiveMembership, setHasActiveMembership] = useState<boolean | null>(null);
   const [isOverFileLimit, setIsOverFileLimit] = useState(false);
   const { user } = useUser();
-  console.log(hasActiveMembership)
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    
     if (!user) {
       setHasActiveMembership(false);
       setIsOverFileLimit(false);
@@ -42,7 +41,6 @@ export default function useSubscription() {
         }>;
       })
       .then(({ hasActiveMembership, fileCount }) => {
-        console.log(fileCount)
         setHasActiveMembership(hasActiveMembership);
         const limit = hasActiveMembership ? PRO_LIMIT : FREE_LIMIT;
         setIsOverFileLimit(fileCount >= limit);
