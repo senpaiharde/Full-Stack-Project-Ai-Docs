@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = getSupabaseServerClient;
-
+/// event listener at strip
   switch (event.type) {
     case 'checkout.session.completed':
     case 'payment_intent.succeeded': {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       break;
     }
 
-    case 'customer.subscription.deleted':
+    case 'customer.subscription.deleted': 
     case 'subscription_schedule.canceled': {
       const subscription = event.data.object as Stripe.Subscription;
       const customerId = subscription.customer as string;

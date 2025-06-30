@@ -12,14 +12,14 @@ export async function POST(request: Request) {
 
   const { data: sub, error: subErr } = await supabase
     .from('subscriptions') //table
-    .select('is_pro, expires_at') // col
+    .select('is_pro') // col
     .eq('user_id', userId) // having
     .order('created_at', { ascending: false }) // taking the bottom turning of the first
     .limit(1) // limitter
     .single(); //single
 
   if (subErr) throw subErr;
-
+ 
   const { count, error: countErr } = await supabase
     .from('pdf_files')
     .select('id', { head: true, count: 'exact' })
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   if (countErr) throw countErr;
 
   return NextResponse.json({
-    hasActiveMembership: sub.is_pro && new Date(sub.expires_at) > new Date(),
+    hasActiveMembership: sub.is_pro,
     fileCount: count ?? 0,
   });
 }
