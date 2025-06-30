@@ -14,16 +14,38 @@ function UpgradeButton() {
   const [isPending, startTransition] = useTransition(); /// cool feac is pending + makes the site active for user file there is pending in action
   const { hasActiveMembership, loading } = useSubscription();
 
-  if (!hasActiveMembership && !loading) return;
-  <Button asChild variant="default" className="border-indigo-600">
-    <Link href="/dashboard/upgrade">
-      Upgrade
-      <StarIcon className="fill-indigo-600 text-white"></StarIcon>
-    </Link>
-  </Button>;
+  if (!hasActiveMembership && !loading)
+    return (
+      <Button asChild variant="default" className="border-indigo-600">
+        <Link href="/dashboard/upgrade">
+          Upgrade
+          <StarIcon className="fill-indigo-600 text-white"></StarIcon>
+        </Link>
+      </Button>
+    );
 
-  if(loading)
-  return <div>UpgradeButton</div>;
+  if (loading)
+    return (
+      <Button variant="default" className="border-indigo-600">
+        <Loader2Icon className="animate-spin" />
+      </Button>
+    );
+
+  return (
+  <Button
+   disabled={isPending}
+   variant='default'
+   className='border-indigo-500 bg-indigo-600'>
+   {isPending ?(
+    <Loader2Icon className="animate-spin" />
+   ):(
+    <p>
+        <span className='font-extrabold'>PRO</span>
+        Account
+    </p>
+   )}
+  </Button>
+  )
 }
 
 export default UpgradeButton;
