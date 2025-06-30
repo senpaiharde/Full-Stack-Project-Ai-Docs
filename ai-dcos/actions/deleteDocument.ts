@@ -24,13 +24,23 @@ export async function deleteDocument(docId: string) {
     throw new Error('Could not fetch file record');
   }
 
-
-
-
-
-  
   const { error: dbErr } = await supabase
-  .from('pdf_files');
+    .from('pdf_files')
+    .delete()
+    .eq('id', docId)
+    .eq('owner_id', userId);
+  if (dbErr) {
+    console.error('Error deleting database record', dbErr);
+    throw new Error('Could deleting database record');
+  }
+
+  const { error: storageErr } = await supabase.storage.from('pdfs').remove([fileRecord.path]);
+
+  if (storageErr) {
+    console.error('Error deleting from storage', storageErr);
+    throw new Error('Error deleting from storaged');
+  }
+
   // Delete all embeddings associated with the document
   const index = await pineconeClient.index(indexName);
   await index.namespace(docId).deleteAll();
