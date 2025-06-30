@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -14,6 +15,7 @@ export default function RootLayout({
       <body className="min-h-screen h-screen overflow-hidden flex flex-col"
        
       >
+         <Toaster />
         {children}
       </body>
     </html>
