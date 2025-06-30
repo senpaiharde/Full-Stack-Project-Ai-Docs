@@ -7,6 +7,7 @@ import useSubscription from "@/hooks/helperSubscription";
 import { useTransition } from "react";
 import { Button } from "../button";
 import { toast } from 'sonner';
+import { deleteDocument } from "@/actions/deleteDocument";
 function Document({
   id,
   name,
@@ -41,6 +42,23 @@ function Document({
         <p className='text-sm text-gray-500 group-hover:text-indigo-100'>{byteSize(size).value}KB</p>
       </div>
       <div className="flex space-x-2 justify-end">
+         <Button variant='outline'
+        disabled={isDeleting || !hasActiveMembership}
+        onClick={() => {
+            const prm  = window.confirm(
+                'Are you sure you want to delete this document?'
+            )
+            if(prm){
+                startTransaction(async () => {
+                    await deleteDocument(id)
+                })
+            }
+        }}>
+            <Trash2Icon className="h-6 w-6 text-red-500"/>
+            {!hasActiveMembership && (
+                <span className="text-red-500 ml-2">PRO Feature</span>
+            )}
+        </Button>
         <Button variant='outline'
         asChild>
             <a href={downloadUrl} download>
