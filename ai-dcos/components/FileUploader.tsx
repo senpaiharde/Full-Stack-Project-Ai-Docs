@@ -1,11 +1,13 @@
 'use client';
 
+import useSubscription from '@/hooks/helperSubscription';
 import { createSupabaseClient } from '@/lib/superbase';
 import { useAuth } from '@clerk/nextjs';
 import { CircleArrowDown, RocketIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { toast } from 'sonner';
 
 function FileUploader() {
   const { userId, isLoaded } = useAuth();
@@ -13,7 +15,7 @@ function FileUploader() {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('');
-
+  const { isOverFileLimit, loading } = useSubscription();
   const simulateProgress = () => {
     let current = 0;
     const interval = setInterval(() => {
@@ -29,6 +31,16 @@ function FileUploader() {
       if (!isLoaded || !userId) {
         console.error('Not signed in');
         return;
+      }
+      if (isOverFileLimit) {
+        return toast.info('Free Plan File Limit Reached', {
+          description:
+            'You have reached the maximum number of files allowed for your Please Upgrade to add more documents.',
+          action: {
+            label: 'Upgrade',
+            onClick: () => router.push('/dashboard/upgrade'),
+          },
+        });
       }
       setUploading(true);
       setProgress(0);
@@ -86,31 +98,33 @@ function FileUploader() {
             }}>
             {progress} %
           </div>
-         
-          <p className='text-indigo-600 animate-pulse'>{status}</p>
+
+          <p className="text-indigo-600 animate-pulse">{status}</p>
         </div>
-      )}{!uploading &&(<div
-        {...getRootProps()}
-        className={`p-10 border-2 border-dashed mt-10 w-[90%]  border-indigo-600 text-indigo-600
+      )}
+      {!uploading && (
+        <div
+          {...getRootProps()}
+          className={`p-10 border-2 border-dashed mt-10 w-[90%]  border-indigo-600 text-indigo-600
         rounded-lg h-96 flex items-center justify-center ${
           isFocused || isDragAccept ? 'border-indigo-300' : 'border-indigo-100'
         }`}>
-        <input {...getInputProps()} />
-        <div className="flex flex-col items-center justify-center">
-          {isDragActive ? (
-            <>
-              <RocketIcon className="h-20 w-20 animate-ping" />
-              <p>Drop the files here ...</p>
-            </>
-          ) : (
-            <>
-              <CircleArrowDown className="h-20 w-20 animate-bounce" />
-              <p>Drag n drop some files here, or click to select files</p>
-            </>
-          )}
+          <input {...getInputProps()} />
+          <div className="flex flex-col items-center justify-center">
+            {isDragActive ? (
+              <>
+                <RocketIcon className="h-20 w-20 animate-ping" />
+                <p>Drop the files here ...</p>
+              </>
+            ) : (
+              <>
+                <CircleArrowDown className="h-20 w-20 animate-bounce" />
+                <p>Drag n drop some files here, or click to select files</p>
+              </>
+            )}
+          </div>
         </div>
-      </div>)}
-      
+      )}
     </div>
   );
 }
