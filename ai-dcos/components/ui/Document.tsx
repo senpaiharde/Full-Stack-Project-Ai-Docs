@@ -42,7 +42,8 @@ function Document({
         <p className='text-sm text-gray-500 group-hover:text-indigo-100'>{byteSize(size).value}KB</p>
       </div>
       <div className="flex space-x-2 justify-end">
-         <Button variant='outline'
+         <Button variant='outline' 
+         
         disabled={isDeleting || !hasActiveMembership}
         onClick={() => {
             const prm  = window.confirm(

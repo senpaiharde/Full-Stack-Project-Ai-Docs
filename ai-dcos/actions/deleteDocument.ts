@@ -42,9 +42,18 @@ export async function deleteDocument(docId: string) {
   }
 
   // Delete all embeddings associated with the document
-  const index = await pineconeClient.index(indexName);
-  await index.namespace(docId).deleteAll();
-
+  try {
+    const index = pineconeClient.index(indexName);
+    await index.namespace(docId).deleteAll();
+  } catch (err: any) {
+    // Ignore 404 when namespace does not exist
+    if (err.statusCode === 404) {
+      console.warn(`Pinecone namespace '${docId}' not found, skipping embeddings deletion.`);
+    } else {
+      console.error('Error deleting Pinecone namespace', err);
+      throw err;
+    }
+  }
   // Revalidate the dashboard page to ensure the documents are up to date
   revalidatePath('/dashboard');
 }
