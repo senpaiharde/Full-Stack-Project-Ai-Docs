@@ -49,7 +49,7 @@ export default function useSubscription() {
           fileCount: number;
         }>;
       })
-      .then(({ hasActiveMembership, fileCount }) => {
+      .then(({ hasActiveMembership = false, fileCount = 0 }) => {
         setHasActiveMembership(hasActiveMembership);
         const limit = hasActiveMembership ? PRO_LIMIT : FREE_LIMIT;
         setIsOverFileLimit(fileCount >= limit);
