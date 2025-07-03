@@ -66,7 +66,7 @@ function FileUploader() {
         const row = json.row;
         setProgress(100);
         setStatus('Upload complete!');
-        //console.log(' Inserted PDF row via API:', row);
+       
         setTimeout(() => {
           router.push(`/dashboard/files/${row.id}`);
         }, 500);
