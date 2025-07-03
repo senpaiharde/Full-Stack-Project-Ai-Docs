@@ -27,7 +27,7 @@ function UpgradeButton() {
       <Button asChild variant="default" className="text-indigo-600 dark:text-indigo-400">
         <Link href="/dashboard/upgrade">
           Upgrade
-          <StarIcon className="fill-indigo-600 text-white"></StarIcon>
+          <StarIcon className="fill-indigo-600 dark:fill-indigo-400 text-white"></StarIcon>
         </Link>
       </Button>
     );

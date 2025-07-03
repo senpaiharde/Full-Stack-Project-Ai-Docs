@@ -31,10 +31,11 @@ function PdfView({ url }: { url: string }) {
     setNumPages(numPages);
   };
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div className="sticky top-0 z-50 bg-gray-100 p-2 rounded-b-lg">
-        <div className="max-w-6xl px-2 grid grid-cols-6 gap-2">
+    <div className="flex flex-col justify-center items-center dark:bg-zinc-900">
+      <div className="sticky top-0 z-50 bg-gray-100 dark:bg-zinc-900 p-2 rounded-b-lg">
+        <div className="max-w-6xl px-5 grid grid-cols-6 gap-2">
           <Button
+            className='hover:curser'
             variant="outline"
             disabled={pageNumber === 1}
             onClick={() => {
@@ -60,13 +61,13 @@ function PdfView({ url }: { url: string }) {
             }}>
             Next
           </Button>
-          <Button variant="outline" onClick={() => setRotation((rotation + 90) % 360)}>
+          <Button  className='cursor-pointer' variant="outline" onClick={() => setRotation((rotation + 90) % 360)}>
             <RotateCw />
           </Button>
-          <Button variant="outline" disabled={scale >= 1.5} onClick={() => setScale(scale * 1.2)}>
+          <Button className='cursor-pointer'  variant="outline" disabled={scale >= 1.5} onClick={() => setScale(scale * 1.2)}>
             <ZoomInIcon />
           </Button>
-          <Button variant="outline" disabled={scale <= 0.75} onClick={() => setScale(scale / 1.2)}>
+          <Button className='cursor-pointer' variant="outline" disabled={scale <= 0.75} onClick={() => setScale(scale / 1.2)}>
             <ZoomOutIcon />
           </Button>
         </div>
