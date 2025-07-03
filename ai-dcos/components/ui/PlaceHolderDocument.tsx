@@ -19,7 +19,7 @@ function PlaceHolderDocument() {
   return (
     <Button
       onClick={handleClick}
-      className="flex flex-col items-center justify-center w-64 h-80
+      className="cursor-pointer flex flex-col items-center justify-center w-64 h-80
     rounded-xl bg-gray-200 drop-shadow-md text-gray-400">
       {isOverFileLimit ? (
         <FrownIcon className="h-16 w-16" />

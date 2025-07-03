@@ -60,6 +60,15 @@ function Chat({ id }: { id: string }) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    toast.success('bot',{
+        description:'I received Your message',
+        action:{
+            label:'Close',
+            onClick(event) {
+                
+            },
+        }
+    })
     if (!user?.id) {
       toast.error('User not found', {
         action: {
@@ -154,7 +163,7 @@ function Chat({ id }: { id: string }) {
           onChange={(e) => setInput(e.target.value)}
         />
 
-        <Button type="submit" disabled={!input || isPending}>
+        <Button  className='cursor-pointer' type="submit" disabled={!input || isPending}>
           {isPending ? <Loader2Icon className="animate-spin text-indigo-600" /> : 'Ask'}
         </Button>
       </form>

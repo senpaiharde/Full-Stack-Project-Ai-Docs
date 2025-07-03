@@ -62,7 +62,7 @@ async function Documents() {
 
   return (
     <div
-      className="flex flex-wrap p-5 bg-gray-100  dark:bg-zinc-900 justify-center 
+      className=" flex flex-wrap p-5 bg-gray-100  dark:bg-zinc-900 justify-center 
     lg:justify-start rounded-b-sm gap-5 max-w-7xl mx-auto">
         {files.map(({ id, name, downloadUrl, size }) => (
         <Document
