@@ -30,7 +30,16 @@ export default function useSubscription() {
       body: JSON.stringify({ userId: user.id }),
     })
       .then(async (res: Response) => {
-        const payload = await res.json();
+        let payload: any = null;
+
+        try {
+          const text = await res.text();
+          payload = text ? JSON.parse(text) : {};
+        } catch (err) {
+          console.error('Failed to parse /api/subscription response:', err);
+          throw new Error('Invalid JSON from server');
+        }
+
         if (!res.ok) {
           console.error('Subscription API error', res.status, payload);
           throw new Error(payload.error || payload.message || res.statusText);
