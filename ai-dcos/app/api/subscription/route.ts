@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     .limit(1); // limitter
 
   if (subErr) throw subErr;
-
+  const isPro = sub?.[0]?.is_pro ?? false;
   const { count, error: countErr } = await supabase
     .from('pdf_files')
     .select('id', { head: true, count: 'exact' })
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (countErr) throw countErr;
 
   return NextResponse.json({
-    hasActiveMembership: sub.is_pro,
+    hasActiveMembership: isPro,
     fileCount: count ?? 0,
   });
 }
