@@ -43,7 +43,7 @@ export async function createCheckoutSession(userDetails: UserDetails) {
     };
     const { error: upsertErr } = await supabase
       .from("subscriptions")
-      .upsert([payload], { onConflict: ["user_id"] });
+      .upsert([payload], { onConflict: "user_id" });
 
     if (upsertErr) throw upsertErr;
     stripeCustomerId = customer.id;

@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function POST(request: Request) {
-  const { userId } = await request.json(); 
+  const { userId } = await request.json();
   if (!userId) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
   }
@@ -15,11 +15,10 @@ export async function POST(request: Request) {
     .select('is_pro') // col
     .eq('user_id', userId) // having
     .order('created_at', { ascending: false }) // taking the bottom turning of the first
-    .limit(1) // limitter
-    .single(); //single
+    .limit(1); // limitter
 
   if (subErr) throw subErr;
- 
+
   const { count, error: countErr } = await supabase
     .from('pdf_files')
     .select('id', { head: true, count: 'exact' })

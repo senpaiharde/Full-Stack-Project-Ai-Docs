@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = getSupabaseServerClient;
-/// event listener at strip
+  /// event listener at strip
   switch (event.type) {
     case 'checkout.session.completed':
     case 'payment_intent.succeeded': {
@@ -29,11 +29,14 @@ export async function POST(req: NextRequest) {
 
       let expiresAt: string | null = null;
       if (subscriptionId) {
-        
         const subscription = (await stripe.subscriptions.retrieve(subscriptionId)) as any;
 
-       
-        expiresAt = new Date(subscription.current_period_end * 1000).toISOString();
+        if (subscription?.current_period_end) {
+          const ts = Number(subscription.current_period_end);
+          if (!isNaN(ts)) {
+            expiresAt = new Date(ts * 1000).toISOString();
+          }
+        }
       }
 
       // mark user as PRO in `subscriptions` table
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest) {
       break;
     }
 
-    case 'customer.subscription.deleted': 
+    case 'customer.subscription.deleted':
     case 'subscription_schedule.canceled': {
       const subscription = event.data.object as Stripe.Subscription;
       const customerId = subscription.customer as string;
