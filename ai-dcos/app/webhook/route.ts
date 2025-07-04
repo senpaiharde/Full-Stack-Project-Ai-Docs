@@ -44,7 +44,9 @@ export async function POST(req: NextRequest) {
         .from('subscriptions')
         .update({
           is_pro: true,
-          expires_at: expiresAt,
+
+          created_at: new Date().toISOString(),
+          expires_at: expiresAt ?? null,
         })
         .eq('stripe_customer_id', customerId);
 
