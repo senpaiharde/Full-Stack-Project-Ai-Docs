@@ -126,7 +126,7 @@ Visit: [http://localhost:3000](http://localhost:3000)
 ![Get Started Page](./screenshots/Screenshot%202025-07-04%20182020.png)
 
 ### 📁 File Upload & Document Dashboard
-![Upload](./screenshots/Screenshot%202025-07-04%20182110.png)
+![Upload](ai-dcos/public/screenshots/Screenshot 2025-07-04 182155.png)
 ![Document Cards](./screenshots/Screenshot%202025-07-04%20182155.png)
 
 ### 💬 Chat with Document
