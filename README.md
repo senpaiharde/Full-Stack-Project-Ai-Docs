@@ -103,3 +103,28 @@ OpenAI       Embeddings + Chat Completion
 LangChain    	Vector search + context mgmt
 Pinecone    	Vector similarity search
 Stripe	      Payment integration
+
+
+
+
+## ✨ Screenshots
+
+### 🧭 Landing Page & Onboarding
+![Landing Page](./screenshots/Screenshot%202025-07-04%20181804.png)
+![Get Started Page](./screenshots/Screenshot%202025-07-04%20182020.png)
+
+### 📁 File Upload & Document Dashboard
+![Upload](./screenshots/Screenshot%202025-07-04%20182110.png)
+![Document Cards](./screenshots/Screenshot%202025-07-04%20182155.png)
+
+### 💬 Chat with Document
+![Chat UI](./screenshots/Screenshot%202025-07-04%20182235.png)
+
+### 🔐 Account Management
+![Clerk Settings](./screenshots/Screenshot%202025-07-04%20182319.png)
+
+### 🧾 Document Viewer + Chat
+![AI Chat Over PDF](./screenshots/Screenshot%202025-07-04%20182406.png)
+
+### 💳 Subscription (Stripe)
+![Stripe Billing](./screenshots/Screenshot%202025-07-04%20182454.png)
