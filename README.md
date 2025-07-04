@@ -142,4 +142,4 @@ Visit: [http://localhost:3000](http://localhost:3000)
 ![Stripe Billing](./screenshots/Screenshot%202025-07-04%20182454.png)
 
 
-if not loading screenshots i can find them undersection screenshots at public folder in ai-docs
+if not loading screenshots u can find them undersection screenshots at public folder in ai-docs
