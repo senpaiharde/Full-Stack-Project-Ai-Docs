@@ -67,13 +67,19 @@ A full-stack SaaS platform that lets users upload documents (like PDFs) and **ch
 ```bash
 git clone https://github.com/senpaiharde/Full-Stack-Project-Ai-Docs.git
 cd ai-docs-chat
+```
 
-2:  Install dependencies: npm install
+### 2. Install dependencies
 
+```bash
+npm install
+```
 
-3. Configure environment variables: .env.local file
-with following keys
+### 3. Configure environment variables
 
+Create a `.env.local` file with the following keys:
+
+```env
 OPENAI_API_KEY=your_openai_key
 PINECONE_API_KEY=your_pinecone_key
 PINECONE_ENVIRONMENT=your_env
@@ -88,24 +94,30 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+```
 
+### 4. Run the app
 
-4: Run the app:  npm run dev
+```bash
+npm run dev
+```
 
+Visit: [http://localhost:3000](http://localhost:3000)
 
+---
 
+## 🧩 Integrations
 
-🧩 Integrations
-Service	     Purpose
-Clerk	       Auth + Session Management
-Supabase    	DB, Auth, Storage
-OpenAI       Embeddings + Chat Completion
-LangChain    	Vector search + context mgmt
-Pinecone    	Vector similarity search
-Stripe	      Payment integration
+| Service   | Purpose                        |
+|-----------|--------------------------------|
+| **Clerk**     | Auth + Session Management      |
+| **Supabase**  | DB, Auth, Storage              |
+| **OpenAI**    | Embeddings + Chat Completion   |
+| **LangChain** | Vector search + context mgmt   |
+| **Pinecone**  | Vector similarity search       |
+| **Stripe**    | Payment integration            |
 
-
-
+---
 
 ## ✨ Screenshots
 
