@@ -67,13 +67,19 @@ A full-stack SaaS platform that lets users upload documents (like PDFs) and **ch
 ```bash
 git clone https://github.com/senpaiharde/Full-Stack-Project-Ai-Docs.git
 cd ai-docs-chat
+```
 
-2:  Install dependencies: npm install
+### 2. Install dependencies
 
+```bash
+npm install
+```
 
-3. Configure environment variables: .env.local file
-with following keys
+### 3. Configure environment variables
 
+Create a `.env.local` file with the following keys:
+
+```env
 OPENAI_API_KEY=your_openai_key
 PINECONE_API_KEY=your_pinecone_key
 PINECONE_ENVIRONMENT=your_env
@@ -88,18 +94,52 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+```
+
+### 4. Run the app
+
+```bash
+npm run dev
+```
+
+Visit: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🧩 Integrations
+
+| Service   | Purpose                        |
+|-----------|--------------------------------|
+| **Clerk**     | Auth + Session Management      |
+| **Supabase**  | DB, Auth, Storage              |
+| **OpenAI**    | Embeddings + Chat Completion   |
+| **LangChain** | Vector search + context mgmt   |
+| **Pinecone**  | Vector similarity search       |
+| **Stripe**    | Payment integration            |
+
+---
+
+## ✨ Screenshots
+
+### 🧭 Landing Page & Onboarding
+![Landing Page](./screenshots/Screenshot%202025-07-04%20181804.png)
+![Get Started Page](./screenshots/Screenshot%202025-07-04%20182020.png)
+
+### 📁 File Upload & Document Dashboard
+![Upload](./ai-dcos/public/screenshots/Screenshot 2025-07-04 182155.png)
+![Document Cards](./screenshots/Screenshot%202025-07-04%20182155.png)
+
+### 💬 Chat with Document
+![Chat UI](./screenshots/Screenshot%202025-07-04%20182235.png)
+
+### 🔐 Account Management
+![Clerk Settings](./screenshots/Screenshot%202025-07-04%20182319.png)
+
+### 🧾 Document Viewer + Chat
+![AI Chat Over PDF](./screenshots/Screenshot%202025-07-04%20182406.png)
+
+### 💳 Subscription (Stripe)
+![Stripe Billing](./screenshots/Screenshot%202025-07-04%20182454.png)
 
 
-4: Run the app:  npm run dev
-
-
-
-
-🧩 Integrations
-Service	     Purpose
-Clerk	       Auth + Session Management
-Supabase    	DB, Auth, Storage
-OpenAI       Embeddings + Chat Completion
-LangChain    	Vector search + context mgmt
-Pinecone    	Vector similarity search
-Stripe	      Payment integration
+if not loading screenshots u can find them undersection screenshots at public folder in ai-docs
