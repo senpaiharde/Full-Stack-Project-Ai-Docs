@@ -6,7 +6,7 @@ import { Button } from '@/components/button';
 import useSubscription from '@/hooks/helperSubscription';
 import getStripe from '@/lib/strip.js';
 import { useUser } from '@clerk/nextjs';
-import { loadStripe } from '@stripe/stripe-js';
+
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useTransition } from 'react';

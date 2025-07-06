@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 export const config = { api: { bodyParser: false } };
